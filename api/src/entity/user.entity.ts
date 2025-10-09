@@ -30,7 +30,7 @@ export class UserEntity {
   @Column()
   public provider: string
 
-  @Column({ type: 'simple-array' })
+  @Column({ type: 'jsonb' })
   public roles: rolesType
 
   @Column()
