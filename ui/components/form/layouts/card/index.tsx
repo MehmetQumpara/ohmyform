@@ -102,6 +102,7 @@ export const CardLayout: React.FC<LayoutProps> = (props) => {
   }, [updateValues])
 
   const finish = async (data: { [key: number]: unknown }) => {
+    console.log('finish form', data)
     logger('finish form %O', data)
     setLoading(true)
 

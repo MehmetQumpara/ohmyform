@@ -1,3 +1,3 @@
-import { HealthController } from './health.controller'
+import { AuthController } from './auth.controller'
 
-export const controllers = [HealthController]
+export const controllers = [AuthController]

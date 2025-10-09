@@ -1,14 +1,8 @@
-import { useMutation } from '@apollo/client'
 import { Alert, Button, Form, Input, message } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import { AuthFooter } from 'components/auth/footer'
 import { AuthLayout } from 'components/auth/layout'
 import { setAuth } from 'components/with.auth'
-import {
-  LOGIN_MUTATION,
-  LoginMutationData,
-  LoginMutationVariables,
-} from 'graphql/mutation/login.mutation'
 import { NextPage } from 'next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -24,17 +18,27 @@ const Index: NextPage = () => {
   const [form] = useForm()
   const router = useRouter()
   const [loading, setLoading] = useState(false)
-  const [login] = useMutation<LoginMutationData, LoginMutationVariables>(LOGIN_MUTATION)
   const { data } = useSettingsQuery()
 
-  const finish = async (data: LoginMutationVariables) => {
+  const finish = async (values: { username: string; password: string }) => {
+
+    console.log(values)
     setLoading(true)
     try {
-      const result = await login({
-        variables: data,
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4100'
+      const response = await fetch(`${API_URL}/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ username: values.username, password: values.password }),
       })
-
-      setAuth(result.data.tokens.access, result.data.tokens.refresh)
+      
+      if (!response.ok) {
+        throw new Error('Invalid credentials')
+      }
+      
+      const tokens = await response.json()
+      // API returns { accessToken, refreshToken }
+      setAuth(tokens.accessToken, tokens.refreshToken)
 
       await message.success(t('login:welcomeBack'))
 

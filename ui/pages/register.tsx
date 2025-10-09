@@ -3,7 +3,6 @@ import { useForm } from 'antd/lib/form/Form'
 import { AuthFooter } from 'components/auth/footer'
 import { AuthLayout } from 'components/auth/layout'
 import { setAuth } from 'components/with.auth'
-import { RegisterUserData, useRegisterMutation } from 'graphql/mutation/register.mutation'
 import { NextPage } from 'next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -14,6 +13,15 @@ import { Omf } from '../components/omf'
 import { useSettingsQuery } from '../graphql/query/settings.query'
 import scss from './register.module.scss'
 
+interface RegisterFormData {
+  username: string
+  email: string
+  password: string
+  firstName?: string
+  lastName?: string
+  language?: string
+}
+
 const Register: NextPage = () => {
   const { t } = useTranslation()
   const [form] = useForm()
@@ -21,19 +29,33 @@ const Register: NextPage = () => {
   const [loading, setLoading] = useState(false)
   const { data } = useSettingsQuery()
 
-  const [register] = useRegisterMutation()
+  const finish = async (values: RegisterFormData) => {
 
-  const finish = async (data: RegisterUserData) => {
+    console.log(values)
     setLoading(true)
 
     try {
-      const result = await register({
-        variables: {
-          user: data,
-        },
+      const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4100'
+      const response = await fetch(`${API_URL}/login/register`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: values.username,
+          email: values.email,
+          password: values.password,
+          firstName: values.firstName,
+          lastName: values.lastName,
+          language: values.language,
+        }),
       })
 
-      setAuth(result.data.tokens.access, result.data.tokens.refresh)
+      if (!response.ok) {
+        throw new Error('Registration failed')
+      }
+
+      const tokens = await response.json()
+      // API returns { accessToken, refreshToken }
+      setAuth(tokens.accessToken, tokens.refreshToken)
 
       await message.success(t('register:welcome'))
 
