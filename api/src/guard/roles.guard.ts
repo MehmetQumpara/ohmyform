@@ -7,14 +7,23 @@ export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
-    const ctx = GqlExecutionContext.create(context);
-
-    const roles = this.reflector.get<string[]>('roles', ctx.getHandler());
+    const roles = this.reflector.get<string[]>('roles', context.getHandler());
     if (!roles) {
       return true;
     }
 
-    const userRoles = ctx.getContext().req.user ? ctx.getContext().req.user.roles : []
+    let userRoles: string[] = []
+
+    // REST API için
+    if (context.getType() === 'http') {
+      const request = context.switchToHttp().getRequest()
+      userRoles = request.user ? request.user.roles : []
+    } 
+    // GraphQL için
+    else {
+      const ctx = GqlExecutionContext.create(context)
+      userRoles = ctx.getContext().req.user ? ctx.getContext().req.user.roles : []
+    }
 
     for (const role of roles) {
       if (!userRoles.includes(role)) {
