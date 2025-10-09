@@ -10,7 +10,6 @@ import { StartPageTab } from 'components/form/admin/start.page.tab'
 import { Structure } from 'components/structure'
 import { withAuth } from 'components/with.auth'
 import debug from 'debug'
-import { useFormUpdateMutation } from 'graphql/mutation/form.update.mutation'
 import { NextPage } from 'next'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
@@ -21,9 +20,14 @@ import {
   FormFieldFragment,
   FormFieldOptionKeysFragment,
 } from '../../../../graphql/fragment/form.fragment'
-import { Data, useFormQuery } from '../../../../graphql/query/form.query'
+import { useFormQuery } from '../../../../hooks/useFormQuery'
+import { useFormUpdate } from '../../../../hooks/useFormUpdate'
 
 const logger = debug('page/admin/form/[id]')
+
+interface Data {
+  form: any
+}
 
 const Index: NextPage = () => {
   const { t } = useTranslation()
@@ -31,7 +35,7 @@ const Index: NextPage = () => {
   const [form] = useForm()
   const [saving, setSaving] = useState(false)
   const [fields, setFields] = useState<FormFieldFragment[]>([])
-  const [update] = useFormUpdateMutation()
+  const { updateForm } = useFormUpdate()
 
   const processNext = (next: Data) => {
     return {
@@ -105,18 +109,17 @@ const Index: NextPage = () => {
       })
 
     try {
-      const next = processNext(
-        (
-          await update({
-            variables: cleanInput(formData),
-          })
-        ).data
-      )
+      const cleanedData = cleanInput(formData)
+      const updatedFormData = await updateForm(cleanedData.form)
 
-      form.setFieldsValue(next)
-      setFields(next.form.fields)
-
-      await message.success(t('form:updated'))
+      if (updatedFormData) {
+        const next = processNext({ form: updatedFormData })
+        form.setFieldsValue(next)
+        setFields(next.form.fields)
+        await message.success(t('form:updated'))
+      } else {
+        throw new Error('Update failed')
+      }
     } catch (e) {
       console.error('failed to save', e)
       await message.error(t('form:updateError'))

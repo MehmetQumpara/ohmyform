@@ -6,8 +6,8 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import Structure from '../../components/structure'
 import { withAuth } from '../../components/with.auth'
-import { useProfileUpdateMutation } from '../../graphql/mutation/profile.update.mutation'
-import { useProfileQuery } from '../../graphql/query/admin.profile.query'
+import { useProfileQuery } from '../../hooks/useProfileQuery'
+import { useProfileUpdate } from '../../hooks/useProfileUpdate'
 import { languages } from '../../i18n'
 
 interface FormData {
@@ -38,24 +38,24 @@ const Profile: NextPage = () => {
     },
   })
 
-  const [update] = useProfileUpdateMutation()
+  const { updateProfile } = useProfileUpdate()
 
   const save = async (data: FormData) => {
     setSaving(true)
 
     try {
-      const next = (
-        await update({
-          variables: {
-            user: {
-              ...data.user,
-              password: data.password && data.password === data.confirm ? data.password : undefined,
-            },
-          },
-        })
-      ).data
+      const result = await updateProfile({
+        username: data.user.username,
+        email: data.user.email,
+        firstName: data.user.firstName,
+        lastName: data.user.lastName,
+        language: data.user.language,
+        password: data.password && data.password === data.confirm ? data.password : undefined,
+      })
 
-      form.setFieldsValue(next)
+      if (result) {
+        form.setFieldsValue(result)
+      }
 
       await message.success(t('profile:updated'))
     } catch (e) {

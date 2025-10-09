@@ -18,9 +18,8 @@ import Link from 'next/link'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { useWindowSize } from '../../../components/use.window.size'
-import { FormPagerFragment } from '../../../graphql/fragment/form.pager.fragment'
-import { useFormDeleteMutation } from '../../../graphql/mutation/form.delete.mutation'
-import { useFormPagerQuery } from '../../../graphql/query/form.pager.query'
+import { FormPagerEntry, useFormPager } from '../../../hooks/useFormPager'
+import { useFormDelete } from '../../../hooks/useFormDelete'
 
 const Index: NextPage = () => {
   const { t } = useTranslation()
@@ -28,11 +27,12 @@ const Index: NextPage = () => {
   const [pagination, setPagination] = useState<PaginationProps>({
     pageSize: 25,
   })
-  const [entries, setEntries] = useState<FormPagerFragment[]>()
-  const { loading, refetch, error } = useFormPagerQuery({
+  const [entries, setEntries] = useState<FormPagerEntry[]>()
+  const { deleteForm: deleteFormApi } = useFormDelete()
+  const { loading, refetch, error } = useFormPager({
     variables: {
       limit: pagination.pageSize,
-      start: Math.max(0, pagination.current - 1) * pagination.pageSize || 0,
+      start: Math.max(0, (pagination.current || 1) - 1) * (pagination.pageSize || 25),
     },
     onCompleted: ({ pager }) => {
       setPagination({
@@ -42,29 +42,25 @@ const Index: NextPage = () => {
       setEntries(pager.entries)
     },
   })
-  const [executeDelete] = useFormDeleteMutation()
 
   const deleteForm = async (id: string) => {
-    try {
-      await executeDelete({
-        variables: {
-          id,
-        },
-      })
+    const success = await deleteFormApi(id)
+    
+    if (success) {
       const next = entries.filter((entry) => entry.id !== id)
       if (next.length === 0) {
         setPagination({ ...pagination, current: 1 })
+        refetch()
       } else {
         setEntries(next)
       }
-
       await message.success(t('form:deleted'))
-    } catch (e) {
+    } else {
       await message.error(t('form:deleteError'))
     }
   }
 
-  const columns: ColumnsType<FormPagerFragment> = [
+  const columns: ColumnsType<FormPagerEntry> = [
     {
       title: t('form:row.isLive'),
       dataIndex: 'isLive',

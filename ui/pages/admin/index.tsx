@@ -1,21 +1,14 @@
-import { useQuery } from '@apollo/client'
 import { Col, Row, Statistic } from 'antd'
 import Structure from 'components/structure'
 import { withAuth } from 'components/with.auth'
 import { NextPage } from 'next'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import {
-  ADMIN_STATISTIC_QUERY,
-  AdminStatisticQueryData,
-  AdminStatisticQueryVariables,
-} from '../../graphql/query/admin.statistic.query'
+import { useAdminStatistics } from '../../hooks/useAdminStatistics'
 
 const Index: NextPage = () => {
   const { t } = useTranslation()
-  const { data, loading } = useQuery<AdminStatisticQueryData, AdminStatisticQueryVariables>(
-    ADMIN_STATISTIC_QUERY
-  )
+  const { data, loading } = useAdminStatistics()
 
   return (
     <Structure title={t('admin:home')} selected={'home'} loading={loading}>

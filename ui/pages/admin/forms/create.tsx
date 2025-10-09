@@ -3,15 +3,14 @@ import { cleanInput } from 'components/clean.input'
 import { BaseDataTab } from 'components/form/admin/base.data.tab'
 import Structure from 'components/structure'
 import { withAuth } from 'components/with.auth'
-import { FormFragment } from 'graphql/fragment/form.fragment'
-import { useFormCreateMutation } from 'graphql/mutation/form.create.mutation'
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { useFormCreate } from '../../../hooks/useFormCreate'
 
 interface FormData {
-  form: FormFragment
+  form: any
 }
 
 const Create: NextPage = () => {
@@ -19,21 +18,21 @@ const Create: NextPage = () => {
   const router = useRouter()
   const [form] = Form.useForm<FormData>()
   const [saving, setSaving] = useState(false)
-  const [create] = useFormCreateMutation()
+  const { createForm } = useFormCreate()
 
   const save = async (formData: FormData) => {
     setSaving(true)
 
     try {
-      const next = (
-        await create({
-          variables: cleanInput(formData),
-        })
-      ).data
+      const cleanedData = cleanInput(formData)
+      const newForm = await createForm(cleanedData.form)
 
-      await message.success(t('form:created'))
-
-      await router.replace('/admin/forms/[id]', `/admin/forms/${next.form.id}`)
+      if (newForm) {
+        await message.success(t('form:created'))
+        await router.replace('/admin/forms/[id]', `/admin/forms/${newForm.id}`)
+      } else {
+        throw new Error('Creation failed')
+      }
     } catch (e) {
       console.error('failed to save', e)
       await message.error(t('form:creationError'))

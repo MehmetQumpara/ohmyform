@@ -17,12 +17,12 @@ module.exports = withPlugins([
     productionBrowserSourceMaps: true,
     publicRuntimeConfig: {
       environment,
-      endpoint: process.env.ENDPOINT || '/graphql',
+      endpoint: process.env.ENDPOINT || 'http://localhost:4100/graphql',
       spa: !!process.env.SPA || false,
       mainBackground: process.env.MAIN_BACKGROUND || '#8FA2A6'
     },
     serverRuntimeConfig: {
-      endpoint: process.env.SERVER_ENDPOINT || process.env.ENDPOINT || '/graphql',
+      endpoint: process.env.SERVER_ENDPOINT || process.env.ENDPOINT || 'http://localhost:4100/graphql',
     },
     env: {
       version,

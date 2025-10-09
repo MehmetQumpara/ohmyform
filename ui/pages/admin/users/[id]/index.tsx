@@ -1,4 +1,3 @@
-import { useQuery } from '@apollo/client'
 import { Button, Form, Input, message, Tabs } from 'antd'
 import { useForm } from 'antd/lib/form/Form'
 import Structure from 'components/structure'
@@ -9,12 +8,12 @@ import React, { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { cleanInput } from '../../../../components/clean.input'
 import { BaseDataTab } from '../../../../components/user/admin/base.data.tab'
-import { useUserUpdateMutation } from '../../../../graphql/mutation/user.update.mutation'
-import {
-  ADMIN_USER_QUERY,
-  AdminUserQueryData,
-  AdminUserQueryVariables,
-} from '../../../../graphql/query/admin.user.query'
+import { useUserQuery } from '../../../../hooks/useUserQuery'
+import { useUserUpdate } from '../../../../hooks/useUserUpdate'
+
+interface FormData {
+  user: any
+}
 
 const Index: NextPage = () => {
   const { t } = useTranslation()
@@ -22,32 +21,29 @@ const Index: NextPage = () => {
   const [form] = useForm()
   const [saving, setSaving] = useState(false)
 
-  const { data, loading } = useQuery<AdminUserQueryData, AdminUserQueryVariables>(
-    ADMIN_USER_QUERY,
-    {
-      variables: {
-        id: router.query.id as string,
-      },
-      onCompleted: (next) => {
-        form.setFieldsValue(next)
-      },
-    }
-  )
+  const { data, loading } = useUserQuery({
+    variables: {
+      id: router.query.id as string,
+    },
+    onCompleted: (next) => {
+      form.setFieldsValue(next)
+    },
+  })
 
-  const [update] = useUserUpdateMutation()
+  const { updateUser } = useUserUpdate()
 
-  const save = async (formData: AdminUserQueryData) => {
+  const save = async (formData: FormData) => {
     setSaving(true)
     try {
-      const next = (
-        await update({
-          variables: cleanInput(formData),
-        })
-      ).data
+      const cleanedData = cleanInput(formData)
+      const updatedUser = await updateUser(cleanedData.user)
 
-      form.setFieldsValue(next)
-
-      await message.success(t('user:updated'))
+      if (updatedUser) {
+        form.setFieldsValue({ user: updatedUser })
+        await message.success(t('user:updated'))
+      } else {
+        throw new Error('Update failed')
+      }
     } catch (e) {
       console.error('failed to save', e)
       await message.error(t('user:updateError'))
@@ -59,7 +55,7 @@ const Index: NextPage = () => {
   return (
     <Structure
       loading={loading || saving}
-      title={loading ? t('user:loading') : t('user:mange', { email: data.user.email })}
+      title={loading ? t('user:loading') : data ? t('user:mange', { email: data.user.email }) : ''}
       selected={'users'}
       breadcrumbs={[
         { href: '/admin', name: t('admin:home') },

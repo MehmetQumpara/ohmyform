@@ -11,9 +11,8 @@ import { useTranslation } from 'react-i18next'
 import { DateTime } from '../../../components/date.time'
 import { useWindowSize } from '../../../components/use.window.size'
 import { UserRole } from '../../../components/user/role'
-import { UserPagerFragment } from '../../../graphql/fragment/user.pager.fragment'
-import { useUserDeleteMutation } from '../../../graphql/mutation/user.delete.mutation'
-import { useUserPagerQuery } from '../../../graphql/query/user.pager.query'
+import { UserPagerEntry, useUserPager } from '../../../hooks/useUserPager'
+import { useUserDelete } from '../../../hooks/useUserDelete'
 
 const Index: NextPage = () => {
   const { width } = useWindowSize()
@@ -21,11 +20,12 @@ const Index: NextPage = () => {
   const [pagination, setPagination] = useState<PaginationProps>({
     pageSize: 10,
   })
-  const [entries, setEntries] = useState<UserPagerFragment[]>()
-  const { loading, refetch, error } = useUserPagerQuery({
+  const [entries, setEntries] = useState<UserPagerEntry[]>()
+  const { deleteUser: deleteUserApi } = useUserDelete()
+  const { loading, refetch, error } = useUserPager({
     variables: {
       limit: pagination.pageSize,
-      start: Math.max(0, pagination.current - 1) * pagination.pageSize || 0,
+      start: Math.max(0, (pagination.current || 1) - 1) * (pagination.pageSize || 10),
     },
     onCompleted: ({ pager }) => {
       setPagination({
@@ -35,28 +35,25 @@ const Index: NextPage = () => {
       setEntries(pager.entries)
     },
   })
-  const [executeDelete] = useUserDeleteMutation()
 
   const deleteUser = async (id: string) => {
-    try {
-      await executeDelete({
-        variables: {
-          id,
-        },
-      })
+    const success = await deleteUserApi(id)
+
+    if (success) {
       const next = entries.filter((entry) => entry.id !== id)
       if (next.length === 0) {
         setPagination({ ...pagination, current: 1 })
+        refetch()
       } else {
         setEntries(next)
       }
       await message.success(t('user:deleted'))
-    } catch (e) {
+    } else {
       await message.error(t('user:deleteError'))
     }
   }
 
-  const columns: ColumnsType<UserPagerFragment> = [
+  const columns: ColumnsType<UserPagerEntry> = [
     {
       title: t('user:row.roles'),
       dataIndex: 'roles',
@@ -68,7 +65,7 @@ const Index: NextPage = () => {
     {
       title: t('user:row.email'),
       render(_, row) {
-        return <Tag color={row.verifiedEmail ? 'lime' : 'volcano'}>{row.email}</Tag>
+        return <Tag color={row.emailVerified ? 'lime' : 'volcano'}>{row.email}</Tag>
       },
     },
     {

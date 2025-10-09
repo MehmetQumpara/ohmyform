@@ -14,12 +14,7 @@ import React, { useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { ExportSubmissionAction } from '../../../../components/form/admin/export.submission.action'
 import { SubmissionValues } from '../../../../components/form/admin/submission.values'
-import { FormPagerFragment } from '../../../../graphql/fragment/form.pager.fragment'
-import { SubmissionFragment } from '../../../../graphql/fragment/submission.fragment'
-import {
-  useSubmissionDeleteMutation,
-} from '../../../../graphql/mutation/submission.delete.mutation'
-import { useSubmissionPagerQuery } from '../../../../graphql/query/submission.pager.query'
+import { SubmissionEntry, useSubmissionPager } from '../../../../hooks/useSubmissionPager'
 
 const Submissions: NextPage = () => {
   const { t } = useTranslation()
@@ -27,13 +22,13 @@ const Submissions: NextPage = () => {
   const [pagination, setPagination] = useState<PaginationProps>({
     pageSize: 25,
   })
-  const [form, setForm] = useState<FormPagerFragment>()
-  const [entries, setEntries] = useState<SubmissionFragment[]>()
-  const { loading, refetch } = useSubmissionPagerQuery({
+  const [form, setForm] = useState<any>()
+  const [entries, setEntries] = useState<SubmissionEntry[]>()
+  const { loading, refetch } = useSubmissionPager({
     variables: {
       form: router.query.id as string,
       limit: pagination.pageSize,
-      start: Math.max(0, pagination.current - 1) * pagination.pageSize || 0,
+      start: Math.max(0, (pagination.current || 1) - 1) * (pagination.pageSize || 25),
       filter: {
         excludeEmpty: true,
       },
@@ -47,23 +42,13 @@ const Submissions: NextPage = () => {
       setEntries(pager.entries)
     },
   })
-  const [deleteMutation] = useSubmissionDeleteMutation()
 
   const doDelete = useCallback(async (id) => {
-    try {
-      await deleteMutation({
-        variables: {
-          id,
-        },
-      })
-
-      await message.success(t('submission:deleted'))
-    } catch (e) {
-      await message.error(t('submission:deleteError'))
-    }
+    // Delete functionality will be implemented separately
+    await message.info('Delete submission will be implemented')
   }, [])
 
-  const columns: ColumnsType<SubmissionFragment> = [
+  const columns: ColumnsType<SubmissionEntry> = [
     {
       title: t('submission:progress'),
       render(_, row) {

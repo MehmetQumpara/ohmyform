@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { useMeQuery } from '../graphql/query/me.query'
+import { useMeQuery } from '../hooks/useMeQuery'
 import { LoadingPage } from './loading.page'
 
 export const clearAuth = (): void => {
