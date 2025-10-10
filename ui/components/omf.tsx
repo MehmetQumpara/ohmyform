@@ -1,5 +1,5 @@
 import React from 'react'
-import { useSettingsQuery } from '../graphql/query/settings.query'
+import { useSettingsQuery } from '../hooks/useSettingsQuery'
 import scss from './omf.module.scss'
 
 export const Omf: React.FC = () => {

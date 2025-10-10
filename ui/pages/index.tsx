@@ -7,7 +7,7 @@ import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { LoadingPage } from '../components/loading.page'
 import { Omf } from '../components/omf'
-import { useStatusQuery } from '../graphql/query/status.query'
+import { useStatusQuery } from '../hooks/useStatusQuery'
 import { NextConfigType } from '../next.config.type'
 
 const { publicRuntimeConfig } = getConfig() as NextConfigType

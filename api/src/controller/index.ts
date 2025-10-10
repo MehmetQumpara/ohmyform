@@ -5,5 +5,6 @@ import { SettingsController } from './settings.controller'
 import { AdminController } from './admin.controller'
 import { FormsController } from './forms.controller'
 import { SubmissionsController } from './submissions.controller'
+import { StatusController } from './status.controller'
 
-export const controllers = [AuthController, UserController, UsersController, SettingsController, AdminController, FormsController, SubmissionsController]
+export const controllers = [AuthController, UserController, UsersController, SettingsController, AdminController, FormsController, SubmissionsController, StatusController]
