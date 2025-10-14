@@ -1,0 +1,20 @@
+{
+  "emailFieldRequired": "Lütfen bir E-posta Alanı seçin",
+  "emailRequired": "Lütfen bir E-posta adresi girin",
+  "invalidEmail": "Geçerli bir e-posta olmalı!",
+  "invalidNumber": "Geçerli bir sayı olmalı!",
+  "invalidSlug": "Kısa ad yalnızca küçük harf a-z, 0-9 ve _ içerebilir",
+  "invalidUrl": "Geçerli bir URL olmalı",
+  "languageRequired": "Lütfen bir Dil seçin",
+  "mandatoryFieldsMissing": "Zorunlu alanlar eksik",
+  "passwordConfirmMismatch": "Girdiğiniz iki şifre eşleşmiyor!",
+  "passwordConfirmRequired": "Lütfen şifrenizi onaylayın!",
+  "passwordMinLength": "5 karakterden uzun veya eşit olmalı!",
+  "passwordRequired": "Lütfen şifrenizi girin!",
+  "subjectRequired": "Lütfen bir konu belirtin",
+  "templateRequired": "Lütfen bir şablon belirtin",
+  "titleRequired": "Lütfen bir başlık belirtin",
+  "urlRequired": "Lütfen bir Url belirtin",
+  "usernameRequired": "Lütfen bir Kullanıcı Adı belirtin",
+  "valueRequired": "Lütfen bir Değer belirtin"
+}

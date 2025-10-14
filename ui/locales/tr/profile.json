@@ -1,0 +1,12 @@
+{
+  "confirmPassword": "Şifreyi Onayla",
+  "email": "E-posta",
+  "firstName": "Ad",
+  "language": "Dil",
+  "lastName": "Soyad",
+  "password": "Şifre",
+  "updateError": "Profil güncellenemedi",
+  "updateNow": "Kaydet",
+  "updated": "Profil güncellendi",
+  "username": "Kullanıcı Adı"
+}

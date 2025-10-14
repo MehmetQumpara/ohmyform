@@ -1,0 +1,17 @@
+{
+  "baseData": "Temel Veriler",
+  "confirmDelete": "Bu kullanıcıyı silmek istediğinizden emin misiniz?",
+  "deleteError": "kullanıcı silinemedi",
+  "deleteNow": "Şimdi Sil!",
+  "deleted": "Kullanıcı silindi",
+  "loading": "Kullanıcı Yükleniyor",
+  "mange": "\"{{email}}\" Kullanıcısını Düzenle",
+  "row": {
+    "created": "Oluşturulma",
+    "email": "E-posta",
+    "roles": "Rol"
+  },
+  "updateError": "Kullanıcı güncellenemedi",
+  "updateNow": "Kaydet",
+  "updated": "Kullanıcı güncellendi"
+}

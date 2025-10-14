@@ -1,0 +1,22 @@
+{
+  "add": "Gönderim Ekle",
+  "city": "Şehir",
+  "confirmDelete": "Gönderimi gerçekten silmek istiyor musunuz?",
+  "country": "Ülke",
+  "created": "Oluşturulma",
+  "delete.button": "Sil",
+  "deleteError": "Gönderim silinemedi",
+  "deleteNow": "Sil",
+  "deleted": "Gönderim silindi",
+  "device": {
+    "name": "Cihaz Adı",
+    "type": "Cihaz Türü"
+  },
+  "edit": "Düzenle",
+  "export": "Dışa Aktar",
+  "field": "Alan",
+  "lastModified": "Son Değişiklik",
+  "progress": "İlerleme",
+  "submission": "Gönderim",
+  "value": "Değer"
+}

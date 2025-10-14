@@ -1,0 +1,117 @@
+{
+  "baseData": {
+    "isLive": "Yayında Mı",
+    "language": "Dil",
+    "showFooter": "Alt Bilgiyi Göster",
+    "title": "Başlık"
+  },
+  "baseDataTab": "Temel Veriler",
+  "building": "Form Oluşturma",
+  "confirmDelete": "Bu formu tüm gönderimleriyle birlikte gerçekten silmek istiyor musunuz?",
+  "continue": "Devam Et",
+  "create": "Yeni Form Oluştur",
+  "createNow": "Kaydet",
+  "created": "Form Oluşturuldu",
+  "creationError": "Form oluşturulamadı",
+  "deleteError": "Form silinemedi",
+  "deleteNow": "Şimdi Sil!",
+  "deleted": "Form silindi",
+  "design": {
+    "color": {
+      "answer": "Cevap Rengi",
+      "background": "Arka Plan Rengi",
+      "button": "Düğme Rengi",
+      "buttonActive": "Aktif Düğme Rengi",
+      "buttonText": "Düğme Metin Rengi",
+      "question": "Soru Rengi"
+    },
+    "font": "Yazı Tipi",
+    "layout": {
+      "card": "Kart",
+      "slider": "Kaydırıcı"
+    },
+    "layouts": "Düzen"
+  },
+  "designTab": "Tasarım",
+  "endPage": {
+    "action": "Eylem",
+    "activeColor": "Aktif Renk",
+    "addButton": "Düğme Ekle",
+    "bgColor": "Arka Plan Rengi",
+    "buttons": "Düğmeler",
+    "color": "Renk",
+    "continueButtonText": "Devam Et Düğme Metni",
+    "paragraph": "Paragraf",
+    "paragraphInfo": "Gelişmiş biçimlendirme için markdown kullanın",
+    "show": "Göster",
+    "text": "Metin",
+    "title": "Başlık",
+    "url": "Url"
+  },
+  "endPageTab": "Bitiş Sayfası",
+  "fieldsTab": "Form Alanları",
+  "hooks": {
+    "add": "Ekle",
+    "enabled": "Etkin"
+  },
+  "hooksTab": "Web Kancaları",
+  "loading": "Form Yükleniyor",
+  "logic": {
+    "action": {
+      "disable": "Devre Dışı Bırak",
+      "jumpTo": "Şuraya Atla",
+      "require": "Gerektir",
+      "visible": "Görünür"
+    },
+    "add": "Mantık Ekle"
+  },
+  "mange": "\"{{title}}\" Formunu Düzenle",
+  "new": "Yeni Form",
+  "next": "İleri",
+  "notifications": {
+    "add": "Bildirim Ekle",
+    "enabled": "Etkin",
+    "fromEmail": "Gönderen E-postası",
+    "fromEmailInfo": "Posta sunucunuzun bu e-postadan gönderebildiğinden emin olun",
+    "fromField": "Gönderen E-postası",
+    "fromFieldInfo": "E-postalı alan, Yanıtla başlığını ayarlayacaktır",
+    "htmlTemplate": "HTML Şablonu",
+    "htmlTemplateInfo": "E-posta şablonlarınızı oluşturmak için <u>MJML</u> de kullanabilirsiniz",
+    "subject": "Konu",
+    "toEmail": "Sizin E-postanız",
+    "toEmailInfo": "Ayarlanmazsa formun yöneticisine gönderilir",
+    "toField": "E-posta Alanı",
+    "toFieldInfo": "Makbuz için E-postalı Alan"
+  },
+  "notificationsTab": "Bildirimler",
+  "previous": "Önceki",
+  "restart": "Formu Yeniden Başlat",
+  "row": {
+    "admin": "Sahip",
+    "created": "Oluşturulma",
+    "isLive": "Yayında",
+    "language": "Dil",
+    "lastModified": "Son Değişiklik",
+    "title": "Başlık"
+  },
+  "startPage": {
+    "action": "Eylem",
+    "activeColor": "Aktif Renk",
+    "addButton": "Düğme Ekle",
+    "bgColor": "Arka Plan Rengi",
+    "buttons": "Düğmeler",
+    "color": "Renk",
+    "continueButtonText": "Devam Et Düğme Metni",
+    "paragraph": "Paragraf",
+    "paragraphInfo": "Gelişmiş biçimlendirme için markdown kullanın",
+    "show": "Göster",
+    "text": "Metin",
+    "title": "Başlık",
+    "url": "Url"
+  },
+  "startPageTab": "Başlangıç Sayfası",
+  "submitted": "Gönderiminiz için teşekkür ederiz!",
+  "updateError": "Form güncellenemedi",
+  "updateNow": "Kaydet",
+  "updated": "Form güncellendi"
+}

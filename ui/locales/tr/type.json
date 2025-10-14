@@ -1,0 +1,87 @@
+{
+  "add": "Alan Ekle",
+  "checkbox": {
+    "addOption": "Onay Kutusu Ekle",
+    "default": "Varsayılan Değer",
+    "name": "Onay Kutusu",
+    "options": "Onay Kutuları",
+    "removeOption": "Kaldır"
+  },
+  "confirmDelete": "Bu alanı gerçekten kaldırmak istiyor musunuz? Hiçbir yerde referans verilmediğini kontrol edin!",
+  "date": {
+    "default": "Varsayılan Tarih",
+    "max": "Maksimum Tarih",
+    "min": "Minimum Tarih",
+    "name": "Tarih"
+  },
+  "deleteNow": "Alanı Sil",
+  "description": "Açıklama",
+  "descriptionInfo": "Gelişmiş biçimlendirme için markdown kullanın",
+  "dropdown": {
+    "addOption": "Seçenek Ekle",
+    "default": "Varsayılan Değer",
+    "name": "Açılır Menü",
+    "options": "Seçenekler",
+    "removeOption": "Kaldır",
+    "titlePlaceholder": "Başlık",
+    "valuePlaceholder": "Değer"
+  },
+  "email": {
+    "default": "Varsayılan E-posta",
+    "name": "E-posta"
+  },
+  "hidden": {
+    "default": "Varsayılan Değer",
+    "name": "Gizli"
+  },
+  "link": {
+    "default": "Varsayılan Bağlantı",
+    "name": "URL"
+  },
+  "location": {
+    "default": "Varsayılan Konum",
+    "name": "Harita Konumu"
+  },
+  "number": {
+    "default": "Varsayılan Sayı",
+    "name": "Sayı"
+  },
+  "radio": {
+    "addOption": "Seçenek Ekle",
+    "default": "Varsayılan Değer",
+    "name": "Radyo Düğmesi",
+    "options": "Seçenekler",
+    "removeOption": "Kaldır",
+    "titlePlaceholder": "Başlık",
+    "valuePlaceholder": "Değer"
+  },
+  "rating": {
+    "clearNote": "Varsayılan değeri kaldırmak için tekrar tıklayın",
+    "default": "Varsayılan Değer",
+    "name": "Derecelendirme"
+  },
+  "required": "Gerekli",
+  "requiredInfo": "Gerekliyse, kullanıcıların formu gönderebilmesi için varsayılan değer ayarlanmalıdır!",
+  "slider": {
+    "default": "Varsayılan Değer",
+    "max": "Maksimum Değer",
+    "min": "Minimum Değer",
+    "name": "Kaydırıcı",
+    "step": "Adım Büyüklüğü"
+  },
+  "slug": "Kısa Ad",
+  "slugInfo": "Varsayılan dinamiği url parametresi olarak geçmek için kısa ad kullanın ?slug=değer",
+  "textarea": {
+    "default": "Varsayılan Değer",
+    "name": "Metin Alanı"
+  },
+  "textfield": {
+    "default": "Varsayılan Değer",
+    "name": "Metin Satırı"
+  },
+  "title": "Başlık",
+  "yes_no": {
+    "default": "Varsayılan Değer",
+    "name": "Evet / Hayır"
+  }
+}

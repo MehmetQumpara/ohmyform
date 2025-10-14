@@ -1,0 +1,10 @@
+{
+  "admin": "Yönetici",
+  "checkingCredentials": "Kimlik Bilgileri Kontrol Ediliyor",
+  "loadingCredentials": "Kimlik Bilgileri Yükleniyor",
+  "login": "Giriş Yap",
+  "logout": "Çıkış Yap",
+  "profile": "Profil",
+  "recover": "Şifremi Unuttum",
+  "register": "Hesap Oluştur"
+}
