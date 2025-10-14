@@ -8,8 +8,8 @@ interface Props {
 
 export const InputColor: React.FC<Props> = (props) => {
   useEffect(() => {
-    if (!props.value) {
-      props.onChange('#FFF')
+    if (!props.value && props.onChange) {
+      props.onChange('#FFFFFF')
     }
   }, [props.value])
 
@@ -17,8 +17,8 @@ export const InputColor: React.FC<Props> = (props) => {
     <BlockPicker
       triangle={'hide'}
       width={'100%'}
-      color={props.value}
-      onChange={(e: { hex: string }) => props.onChange(e.hex)}
+      color={props.value || '#FFFFFF'}
+      onChange={(e: { hex: string }) => props.onChange && props.onChange(e.hex)}
       styles={{
         default: {
           card: {
