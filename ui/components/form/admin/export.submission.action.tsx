@@ -2,8 +2,7 @@ import { message } from 'antd'
 import ExcelJS, { CellValue } from 'exceljs'
 import { useCallback, useState } from 'react'
 import { SubmissionFragment } from '../../../graphql/fragment/submission.fragment'
-import { useFormQuery } from '../../../graphql/query/form.query'
-import { useSubmissionPagerImperativeQuery } from '../../../graphql/query/submission.pager.query'
+import { useFormQuery } from '../../../hooks/useFormQuery'
 import { fieldTypes } from '../types'
 
 interface Props {
@@ -20,7 +19,41 @@ export const ExportSubmissionAction: React.FC<Props> = (props) => {
     },
   })
 
-  const getSubmissions = useSubmissionPagerImperativeQuery()
+  const getSubmissions = async ({ form, limit, start }: { form: string; limit: number; start: number }) => {
+    const token = localStorage.getItem('access')
+    if (!token) {
+      throw new Error('No access token found')
+    }
+
+    const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4100'
+    const params = new URLSearchParams()
+    params.append('limit', String(limit))
+    params.append('start', String(start))
+    params.append('excludeEmpty', 'true')
+
+    const response = await fetch(`${API_URL}/forms/${form}/submissions?${params.toString()}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+
+    if (!response.ok) {
+      throw new Error('Failed to fetch submissions')
+    }
+
+    const data = await response.json()
+    return {
+      data: {
+        pager: {
+          entries: data.entries,
+          total: data.total,
+          limit: data.limit,
+          start: data.start,
+        },
+      },
+    }
+  }
 
   const exportSubmissions = useCallback(async () => {
     if (loading) {

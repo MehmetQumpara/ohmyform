@@ -67,6 +67,9 @@ export class FormEntity {
   @Column(() => DesignEmbedded)
   public design: DesignEmbedded = new DesignEmbedded();
 
+  @Column({ type: 'boolean', name: 'is_active', default: true })
+  public is_active: boolean;
+
   @CreateDateColumn()
   public created: Date
 

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, ForbiddenException, Get, NotFoundException, Param, Post, Put, Query, UseGuards } from '@nestjs/common'
+import { BadRequestException, Body, Controller, Delete, ForbiddenException, Get, HttpCode, HttpStatus, NotFoundException, Param, Post, Put, Query, UseGuards } from '@nestjs/common'
 import { AuthGuard } from '@nestjs/passport'
 import { Roles } from '../decorator/roles.decorator'
 import { User } from '../decorator/user.decorator'
@@ -24,11 +24,13 @@ export class FormsController {
   ) {}
 
   @Post()
+  @HttpCode(HttpStatus.CREATED)
   @Roles('user')
   async createForm(@Body() input: FormCreateInput, @User() user: UserEntity) {
-    const form = await this.formCreateService.create(user, input)
+    try {
+      const form = await this.formCreateService.create(user, input)
 
-    return {
+      return {
       id: this.idService.encode(form.id),
       title: form.title,
       created: form.created,
@@ -37,7 +39,7 @@ export class FormsController {
       showFooter: form.showFooter,
       anonymousSubmission: form.anonymousSubmission,
       isLive: form.isLive,
-      fields: form.fields.map((field) => ({
+      fields: (form.fields || []).map((field) => ({
         id: this.idService.encode(field.id),
         idx: field.idx,
         title: field.title,
@@ -46,13 +48,13 @@ export class FormsController {
         description: field.description,
         required: field.required,
         defaultValue: field.defaultValue,
-        options: field.options.map((option) => ({
+        options: (field.options || []).map((option) => ({
           id: this.idService.encode(option.id),
           key: option.key,
           title: option.title,
           value: option.value,
         })),
-        logic: field.logic.map((logic) => ({
+        logic: (field.logic || []).map((logic) => ({
           id: this.idService.encode(logic.id),
           action: logic.action,
           formula: logic.formula,
@@ -67,13 +69,13 @@ export class FormsController {
           shape: field.rating.shape,
         } : null,
       })),
-      hooks: form.hooks.map((hook) => ({
+      hooks: (form.hooks || []).map((hook) => ({
         id: this.idService.encode(hook.id),
         enabled: hook.enabled,
         format: hook.format,
         url: hook.url,
       })),
-      notifications: form.notifications.map((notification) => ({
+      notifications: (form.notifications || []).map((notification) => ({
         id: this.idService.encode(notification.id),
         enabled: notification.enabled,
         subject: notification.subject,
@@ -101,7 +103,7 @@ export class FormsController {
         title: form.startPage.title,
         paragraph: form.startPage.paragraph,
         buttonText: form.startPage.buttonText,
-        buttons: form.startPage.buttons.map((button) => ({
+        buttons: (form.startPage?.buttons || []).map((button) => ({
           id: this.idService.encode(button.id),
           url: button.url,
           action: button.action,
@@ -117,7 +119,7 @@ export class FormsController {
         title: form.endPage.title,
         paragraph: form.endPage.paragraph,
         buttonText: form.endPage.buttonText,
-        buttons: form.endPage.buttons.map((button) => ({
+        buttons: (form.endPage?.buttons || []).map((button) => ({
           id: this.idService.encode(button.id),
           url: button.url,
           action: button.action,
@@ -132,6 +134,9 @@ export class FormsController {
         username: form.admin.username,
         email: form.admin.email,
       },
+      }
+    } catch (e) {
+      throw new BadRequestException((e as Error).message || 'Failed to create form')
     }
   }
 
@@ -418,7 +423,12 @@ export class FormsController {
   @Roles('user')
   async deleteForm(@Param('id') id: string, @User() user: UserEntity) {
     const formId = this.idService.decode(id)
-    const form = await this.formService.findById(formId)
+    let form
+    try {
+      form = await this.formService.findById(formId)
+    } catch (e) {
+      throw new NotFoundException('Form not found')
+    }
 
     // Check if user has access to delete this form
     if (!this.formService.isAdmin(form, user)) {

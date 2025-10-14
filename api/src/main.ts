@@ -15,7 +15,14 @@ void (async () => {
     disableErrorMessages: false,
     transform: true,
   }))
-  app.enableCors({origin: '*'})
+  // Enable CORS for UI origin; allow credentials if needed
+  const uiOrigin = process.env.NEXT_PUBLIC_UI_URL || process.env.UI_ORIGIN || '*'
+  app.enableCors({
+    origin: (origin, callback) => callback(null, origin || uiOrigin),
+    credentials: false,
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  })
   app.getHttpAdapter().options('*', cors())
 
   await app.listen(process.env.PORT || 4100);

@@ -20,23 +20,24 @@ export class FormDeleteService {
   }
 
   async delete(id: number): Promise<void> {
+    // Delete dependent submissions first (they may have deep relations)
     const submissions = await this.submissionRepository.find({
-      form: {
-        id,
-      },
+      form: { id },
     })
-
     await Promise.all(
       submissions.map(submission => this.submissionDelete.delete(submission.id)),
     )
+
+    // Delete visitors referencing this form
     await this.visitorRepository.delete({
-      form: {
-        id,
-      },
+      form: { id },
     })
 
-    await this.formRepository.delete({
-      id,
-    })
+    // Soft delete: mark form as inactive instead of removing the row
+    const form = await this.formRepository.findOne(id)
+    if (form) {
+      form.is_active = false
+      await this.formRepository.save(form)
+    }
   }
 }

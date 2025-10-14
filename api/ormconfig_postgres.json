@@ -1,9 +1,10 @@
 {
   "type": "postgres",
   "host": "localhost",
-  "username": "root",
-  "password": "root",
-  "database": "ohmyform",
+  "port": 5432,
+  "username": "postgres",
+  "password": "5396",
+  "database": "postgres",
   "synchronize": false,
   "logging": false,
   "entities": [

@@ -37,8 +37,11 @@ export class FormService {
 
     qb.leftJoinAndSelect('f.admin', 'a')
 
+    // Only active forms globally
+    qb.where('f.is_active = :active', { active: true })
+
     if (user) {
-      qb.where('f.admin = :user', { user: user.id })
+      qb.andWhere('f.admin = :user', { user: user.id })
     }
 
     // TODO readd sort
@@ -55,7 +58,7 @@ export class FormService {
   async findById(id: number | string, existing?: FormEntity): Promise<FormEntity> {
     if (existing) return existing
 
-    const form = await this.formRepository.findOne(id);
+    const form = await this.formRepository.findOne({ where: { id: Number(id), is_active: true } });
 
     if (!form) {
       throw new Error('no form found')
