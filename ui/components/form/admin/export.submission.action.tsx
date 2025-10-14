@@ -1,9 +1,30 @@
 import { message } from 'antd'
 import ExcelJS, { CellValue } from 'exceljs'
 import { useCallback, useState } from 'react'
-import { SubmissionFragment } from '../../../graphql/fragment/submission.fragment'
 import { useFormQuery } from '../../../hooks/useFormQuery'
 import { fieldTypes } from '../types'
+
+interface SubmissionFieldFragmentLocal {
+  id: string
+  type: string
+  value: any
+  field?: { id: string } | null
+}
+
+interface SubmissionFragmentLocal {
+  id: string
+  created: string
+  lastModified?: string
+  geoLocation: {
+    country?: string
+    city?: string
+  }
+  device: {
+    type?: string
+    name?: string
+  }
+  fields: SubmissionFieldFragmentLocal[]
+}
 
 interface Props {
   form: string
@@ -93,24 +114,28 @@ export const ExportSubmissionAction: React.FC<Props> = (props) => {
         start: 0,
       })
 
-      const buildRow = (data: SubmissionFragment): CellValue[] => {
+      const buildRow = (data: SubmissionFragmentLocal): CellValue[] => {
         const row: CellValue[] = [
           data.id,
           data.created,
           data.lastModified,
-          data.geoLocation.country,
-          data.geoLocation.city,
-          data.device.type,
-          data.device.name,
+          data.geoLocation?.country ?? '',
+          data.geoLocation?.city ?? '',
+          data.device?.type ?? '',
+          data.device?.name ?? '',
         ]
 
         orderedFields.forEach((formField) => {
           const field = data.fields.find(submission => submission.field?.id === formField.id)
 
           try {
-            fieldTypes[field.type]?.stringifyValue(field.value)
-
-            row.push(fieldTypes[field.type]?.stringifyValue(field.value))
+            if (field) {
+              // ensure stringifyValue is only called when available and field exists
+              const value = fieldTypes[field.type]?.stringifyValue?.(field.value)
+              row.push(value as CellValue)
+            } else {
+              row.push('')
+            }
           } catch (e) {
             row.push('')
           }

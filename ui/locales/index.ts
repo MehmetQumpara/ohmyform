@@ -16,6 +16,7 @@ import { ru } from './ru'
 import { sv } from './sv'
 import { ta } from './ta'
 import { uk } from './uk'
+import { tr } from './tr'
 
 export const resources = {
   en,
@@ -36,4 +37,5 @@ export const resources = {
   sv,
   ta,
   uk,
+  tr,
 }

@@ -149,7 +149,18 @@ const Submissions: NextPage = () => {
         pagination={pagination}
         expandable={{
           expandedRowRender(record) {
-            return <SubmissionValues form={form} submission={record} />
+            const mapped = {
+              id: record.id,
+              geoLocation: record.geoLocation,
+              device: record.device,
+              fields: record.fields.map(f => ({
+                id: f.id,
+                type: 'text',
+                value: f.content,
+                field: null,
+              })),
+            }
+            return <SubmissionValues form={form} submission={mapped as any} />
           },
           rowExpandable(record) {
             return record.percentageComplete > 0

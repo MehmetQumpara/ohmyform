@@ -2,22 +2,46 @@ import { Descriptions, Table } from 'antd'
 import { ColumnsType } from 'antd/lib/table/interface'
 import React from 'react'
 import { useTranslation } from 'react-i18next'
-import { FormPagerFragment } from '../../../graphql/fragment/form.pager.fragment'
-import {
-  SubmissionFieldFragment,
-  SubmissionFragment,
-} from '../../../graphql/fragment/submission.fragment'
 import { fieldTypes } from '../types'
 
+interface FormPagerFragmentLocal {
+  id: string
+  title: string
+}
+
+interface SubmissionFieldFragmentLocal {
+  id: string
+  type: string
+  value: any
+  field?: {
+    id: string
+    title: string
+    required?: boolean
+  } | null
+}
+
+interface SubmissionFragmentLocal {
+  id: string
+  geoLocation?: {
+    country?: string
+    city?: string
+  }
+  device?: {
+    type?: string
+    name?: string
+  }
+  fields: SubmissionFieldFragmentLocal[]
+}
+
 interface Props {
-  form: FormPagerFragment
-  submission: SubmissionFragment
+  form: FormPagerFragmentLocal
+  submission: SubmissionFragmentLocal
 }
 
 export const SubmissionValues: React.FC<Props> = (props) => {
   const { t } = useTranslation()
 
-  const columns: ColumnsType<SubmissionFieldFragment> = [
+  const columns: ColumnsType<SubmissionFieldFragmentLocal> = [
     {
       title: t('submission:field'),
       render(_, row) {
@@ -44,16 +68,16 @@ export const SubmissionValues: React.FC<Props> = (props) => {
     <div>
       <Descriptions title={t('submission:submission')}>
         <Descriptions.Item label={t('submission:country')}>
-          {props.submission.geoLocation.country}
+          {props.submission.geoLocation?.country}
         </Descriptions.Item>
         <Descriptions.Item label={t('submission:city')}>
-          {props.submission.geoLocation.city}
+          {props.submission.geoLocation?.city}
         </Descriptions.Item>
         <Descriptions.Item label={t('submission:device.type')}>
-          {props.submission.device.type}
+          {props.submission.device?.type}
         </Descriptions.Item>
         <Descriptions.Item label={t('submission:device.name')}>
-          {props.submission.device.name}
+          {props.submission.device?.name}
         </Descriptions.Item>
       </Descriptions>
 
