@@ -31,11 +31,11 @@ const Index: NextPage = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: values.username, password: values.password }),
       })
-      
+
       if (!response.ok) {
         throw new Error('Invalid credentials')
       }
-      
+
       const tokens = await response.json()
       // API returns { accessToken, refreshToken }
       setAuth(tokens.accessToken, tokens.refreshToken)

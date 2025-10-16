@@ -43,7 +43,7 @@ const Submissions: NextPage = () => {
     },
   })
 
-  const doDelete = useCallback(async (id) => {
+  const doDelete = useCallback(async (_id) => {
     // Delete functionality will be implemented separately
     await message.info('Delete submission will be implemented')
   }, [])
@@ -166,9 +166,9 @@ const Submissions: NextPage = () => {
             return record.percentageComplete > 0
           },
         }}
-        onChange={async (next) => {
+        onChange={(next) => {
           setPagination(next)
-          await refetch()
+          refetch()
         }}
       />
     </Structure>

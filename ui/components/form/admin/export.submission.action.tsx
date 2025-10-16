@@ -40,7 +40,13 @@ export const ExportSubmissionAction: React.FC<Props> = (props) => {
     },
   })
 
-  const getSubmissions = async ({ form, limit, start }: { form: string; limit: number; start: number }) => {
+  const getSubmissions = async (
+    {
+      form,
+      limit,
+      start,
+    }: { form: string; limit: number; start: number }
+  ) => {
     const token = localStorage.getItem('access')
     if (!token) {
       throw new Error('No access token found')
@@ -97,6 +103,7 @@ export const ExportSubmissionAction: React.FC<Props> = (props) => {
       // TODO should go through deleted fields as well to have a complete overview!
 
       const sheet = workbook.addWorksheet('Submissions')
+      const dynamicHeaders = orderedFields.map((field) => `${field.title} (${field.type})`)
       sheet.getRow(1).values = [
         'Submission ID',
         'Created',
@@ -105,7 +112,7 @@ export const ExportSubmissionAction: React.FC<Props> = (props) => {
         'City',
         'User Agent',
         'Device',
-        ...orderedFields.map((field) => `${field.title} (${field.type})`),
+        ...dynamicHeaders,
       ]
 
       const firstPage = await getSubmissions({
@@ -126,13 +133,16 @@ export const ExportSubmissionAction: React.FC<Props> = (props) => {
         ]
 
         orderedFields.forEach((formField) => {
-          const field = data.fields.find(submission => submission.field?.id === formField.id)
+          const field = data.fields.find((submission) => submission.field?.id === formField.id)
 
           try {
             if (field) {
-              // ensure stringifyValue is only called when available and field exists
-              const value = fieldTypes[field.type]?.stringifyValue?.(field.value)
-              row.push(value as CellValue)
+              const raw = (fieldTypes[field.type]?.stringifyValue as
+                | ((this: void, v: unknown) => unknown)
+                | undefined
+              )?.call(undefined, field.value)
+              const safe: CellValue = raw == null ? '' : (String(raw) as CellValue)
+              row.push(safe)
             } else {
               row.push('')
             }
@@ -144,11 +154,13 @@ export const ExportSubmissionAction: React.FC<Props> = (props) => {
         return row
       }
 
-      firstPage.data.pager.entries.forEach((row, index) => {
+      const firstEntries = firstPage.data.pager.entries as unknown as SubmissionFragmentLocal[]
+      firstEntries.forEach((row: SubmissionFragmentLocal, index: number) => {
         sheet.getRow(index + 2).values = buildRow(row)
       })
 
-      const pages = Math.ceil(firstPage.data.pager.total / 50)
+      const total = Number(firstPage.data.pager.total)
+      const pages = Math.ceil(total / 50)
       for (let page = 1; page < pages; page++) {
         // now process each page!
         const next = await getSubmissions({
@@ -157,7 +169,8 @@ export const ExportSubmissionAction: React.FC<Props> = (props) => {
           start: page * 50,
         })
 
-        next.data.pager.entries.forEach((row, index) => {
+        const nextEntries = next.data.pager.entries as unknown as SubmissionFragmentLocal[]
+        nextEntries.forEach((row: SubmissionFragmentLocal, index: number) => {
           sheet.getRow(index + 2 + page * 50).values = buildRow(row)
         })
       }

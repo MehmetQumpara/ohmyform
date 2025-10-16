@@ -45,7 +45,7 @@ const Index: NextPage = () => {
 
   const deleteForm = async (id: string) => {
     const success = await deleteFormApi(id)
-    
+
     if (success) {
       const next = entries.filter((entry) => entry.id !== id)
       if (next.length === 0) {
@@ -160,7 +160,6 @@ const Index: NextPage = () => {
               </Tooltip>
             )}
 
-
           </Space>
         )
       },
@@ -186,9 +185,9 @@ const Index: NextPage = () => {
         dataSource={entries}
         rowKey={'id'}
         pagination={pagination}
-        onChange={async (next) => {
+        onChange={(next) => {
           setPagination(next)
-          await refetch()
+          refetch()
         }}
       />
     </Structure>

@@ -25,8 +25,10 @@ import { useFormUpdate } from '../../../../hooks/useFormUpdate'
 
 const logger = debug('page/admin/form/[id]')
 
+import type { FormFragment as FormDataFragment } from '../../../../hooks/useFormQuery'
+
 interface Data {
-  form: any
+  form: FormDataFragment
 }
 
 const Index: NextPage = () => {
@@ -41,7 +43,7 @@ const Index: NextPage = () => {
     return {
       form: {
         ...next.form,
-        fields: next.form.fields
+        fields: (next.form.fields as unknown as FormFieldFragment[])
           .map((field) => {
             const keys: FormFieldOptionKeysFragment = {}
 
@@ -62,7 +64,7 @@ const Index: NextPage = () => {
               optionKeys: keys,
             }
           })
-          .sort((a, b) => a.idx - b.idx),
+          .sort((a, b) => (a.idx ?? 0) - (b.idx ?? 0)),
       },
     }
   }
@@ -81,10 +83,11 @@ const Index: NextPage = () => {
   const save = async (formData: Data) => {
     setSaving(true)
 
-    formData.form.fields = formData.form.fields
+    type FieldWithKeys = FormFieldFragment & { optionKeys?: FormFieldOptionKeysFragment }
+    const preparedFields = (formData.form.fields as unknown as FieldWithKeys[])
       .filter((e) => e && e.type)
       .map(({ optionKeys, ...field }, index) => {
-        const options = field.options
+        const options = [...(field.options || [])]
 
         if (optionKeys) {
           Object.keys(optionKeys).forEach((key) => {
@@ -100,17 +103,24 @@ const Index: NextPage = () => {
           })
         }
 
-        return {
+        const mapped = {
           ...field,
           defaultValue: field.defaultValue !== null ? JSON.stringify(field.defaultValue) : null,
           options,
           idx: index,
         }
+        return mapped as unknown as FormFieldFragment
       })
 
     try {
+      // assign back the prepared fields before cleaning
+      ;(formData.form as unknown as { fields: FormFieldFragment[] }).fields = preparedFields
       const cleanedData = cleanInput(formData)
-      const updatedFormData = await updateForm(cleanedData.form)
+
+      const { id, ...rest } = cleanedData.form as unknown as { id: string }
+      const input = { id, ...(rest as unknown as Record<string, unknown>) } as unknown as import('../../../../hooks/useFormUpdate').FormUpdateInput
+
+      const updatedFormData = await updateForm(input)
 
       if (updatedFormData) {
         const next = processNext({ form: updatedFormData })

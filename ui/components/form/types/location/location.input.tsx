@@ -1,9 +1,11 @@
 import { Alert, Form, InputNumber, Space, Spin } from 'antd'
 import debug from 'debug'
 import React, { useEffect, useState } from 'react'
+import dynamic from 'next/dynamic'
 import { useTranslation } from 'react-i18next'
-import { MapContainer, TileLayer } from 'react-leaflet'
-import { DraggableMarker } from '../../../map/draggable.marker'
+const MapContainer = dynamic(() => import('react-leaflet').then(m => m.MapContainer), { ssr: false })
+const TileLayer = dynamic(() => import('react-leaflet').then(m => m.TileLayer), { ssr: false })
+const DraggableMarker = dynamic(() => import('../../../map/draggable.marker').then(m => m.DraggableMarker), { ssr: false })
 import { FieldInputBuilderType } from '../field.input.builder.type'
 
 const logger = debug('location.number')
@@ -106,42 +108,58 @@ export const builder: FieldInputBuilderType = ({
       <Form.Item dependencies={[[field.id, 'lat'], [field.id, 'lng']]}>
         {(form) => {
           const center = form.getFieldValue([field.id])
+          const hasWindow = typeof window !== 'undefined'
+          const validLat = center && typeof center.lat === 'number' && isFinite(center.lat)
+          const validLng = center && typeof center.lng === 'number' && isFinite(center.lng)
+          const safeCenter = validLat && validLng ? center : (initialValue ?? { lat: 0, lng: 0 })
+          const safeZoom = Number.isFinite(initialZoom) ? initialZoom : 2
+
+          const toLatLngTuple = (
+            c?: { lat?: unknown; lng?: unknown },
+            fallback = { lat: 0, lng: 0 },
+          ): [number, number] => {
+            const lat = Number.isFinite(Number(c?.lat)) ? Number(c?.lat) : fallback.lat
+            const lng = Number.isFinite(Number(c?.lng)) ? Number(c?.lng) : fallback.lng
+            return [lat, lng]
+          }
 
           return (
             <div>
-              <MapContainer
-                center={initialValue}
-                zoom={initialZoom}
-                style={{ height: 300, width: '100%' }}
-              >
-                <TileLayer
-                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-                  url={tiles}
-                />
-                {center.lat && center.lng && (
-                  <DraggableMarker
-                    value={center}
-                    onChange={next => {
-                      form.setFields([
-                        {
-                          name: [
-                            field.id,
-                            'lng',
-                          ],
-                          value: next.lng,
-                        },
-                        {
-                          name: [
-                            field.id,
-                            'lat',
-                          ],
-                          value: next.lat,
-                        },
-                      ])
-                    }}
+              {hasWindow && (
+                <MapContainer
+                  center={toLatLngTuple(safeCenter)}
+                  zoom={safeZoom}
+                  style={{ height: 300, width: '100%' }}
+                >
+                  <TileLayer
+                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+                    url={tiles}
                   />
-                )}
-              </MapContainer>
+                  {validLat && validLng && (
+                    <DraggableMarker
+                      value={safeCenter}
+                      onChange={next => {
+                        form.setFields([
+                          {
+                            name: [
+                              field.id,
+                              'lng',
+                            ],
+                            value: next.lng,
+                          },
+                          {
+                            name: [
+                              field.id,
+                              'lat',
+                            ],
+                            value: next.lat,
+                          },
+                        ])
+                      }}
+                    />
+                  )}
+                </MapContainer>
+              )}
             </div>
           )
         }}

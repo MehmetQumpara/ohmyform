@@ -33,7 +33,7 @@ const Profile: NextPage = () => {
     onCompleted: (next) => {
       form.setFieldsValue(next)
     },
-    onError(e) {
+    onError(_e) {
       void router.push('/')
     },
   })

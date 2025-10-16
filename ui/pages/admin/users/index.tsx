@@ -117,9 +117,9 @@ const Index: NextPage = () => {
         dataSource={entries}
         rowKey={'id'}
         pagination={pagination}
-        onChange={async (next) => {
+        onChange={(next) => {
           setPagination(next)
-          await refetch()
+          refetch()
         }}
       />
     </Structure>

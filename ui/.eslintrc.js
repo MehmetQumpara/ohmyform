@@ -58,10 +58,7 @@ module.exports = {
     }],
     'quotes': ['error', 'single', { 'avoidEscape': true }],
     'comma-dangle': ['error', 'always-multiline'],
-    'linebreak-style': [
-      'error',
-      'unix'
-    ],
+    'linebreak-style': 'off',
     'no-trailing-spaces': 'error',
     'eol-last': 'error',
     'unused-imports/no-unused-imports': 'error',

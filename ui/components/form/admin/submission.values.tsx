@@ -56,9 +56,23 @@ export const SubmissionValues: React.FC<Props> = (props) => {
       title: t('submission:value'),
       render(_, row) {
         try {
-          return fieldTypes[row.type]?.displayValue(row.value)
+          const out = (fieldTypes[row.type]?.displayValue as
+            | ((this: void, v: unknown) => unknown)
+            | undefined
+          )?.call(undefined, row.value)
+
+          if (out === undefined || out === null) return ''
+          if (typeof out === 'string' || typeof out === 'number' || typeof out === 'boolean') return out
+          return JSON.stringify(out)
         } catch (e) {
-          return row.value
+          if (row.value === undefined || row.value === null) return ''
+          if (
+            typeof row.value === 'string' ||
+            typeof row.value === 'number' ||
+            typeof row.value === 'boolean'
+          )
+            return row.value
+          return JSON.stringify(row.value)
         }
       },
     },
