@@ -1,39 +1,44 @@
-# WARNING!! This is to build from source
+version: "3.9"
 
-# to use a version that is prebuilt copy one of the entries from the examples folder!
-
-
-version: "3"
 services:
-  redis:
-    image: redis
-  ohmyform:
-    build: .
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
     environment:
-      CREATE_ADMIN: "TRUE"
-      MAILER_URI: smtp://mail:1025
+      NODE_ENV: production
       DATABASE_DRIVER: postgres
-      DATABASE_URL: postgresql://root:root@db:5432/ohmyform
-      LOGIN_NOTE: "login with root:root!"
-      SECRET_KEY: 12345
-    links:
-      - db
-      - redis
-      - mail
+      DATABASE_URL: postgres://postgres:5396@host.docker.internal:5432/ohmyform
+      DATABASE_SSL: "false"
+      DATABASE_MIGRATE: "true"
+      UI_ORIGIN: http://localhost:4100
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     ports:
-      - "5200:3000"
-    depends_on:
-      - db
-      - redis
-  mail:
-    image: mailhog/mailhog
-    ports:
-      - "5051:8025"
-  db:
-    image: postgres:10-alpine
-    volumes:
-      - ./pg_data:/var/lib/postgresql/data
+      - "4000:4000"
+    networks:
+      - ohmyform-network
+
+  ui:
+    build:
+      context: ./ui
+      dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:4000
     environment:
-      POSTGRES_USER: root
-      POSTGRES_PASSWORD: root
-      POSTGRES_DB: ohmyform
+      NODE_ENV: production
+      # Sunucu tarafı (server-side) API bağlantısı
+      API_BASE: http://api:4000
+      SERVER_API_BASE: http://api:4000
+      # Tarayıcı tarafı (client-side) API bağlantısı
+      NEXT_PUBLIC_API_URL: http://localhost:4000
+    depends_on:
+      - api
+    ports:
+      - "4100:4100"
+    networks:
+      - ohmyform-network
+
+networks:
+  ohmyform-network:
+    driver: bridge

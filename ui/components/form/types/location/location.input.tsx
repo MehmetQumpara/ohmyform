@@ -2,9 +2,16 @@ import { Alert, Form, InputNumber, Space, Spin } from 'antd'
 import debug from 'debug'
 import React, { useEffect, useState } from 'react'
 import dynamic from 'next/dynamic'
+import type { MapContainerProps, TileLayerProps } from 'react-leaflet'
 import { useTranslation } from 'react-i18next'
-const MapContainer = dynamic(() => import('react-leaflet').then(m => m.MapContainer), { ssr: false })
-const TileLayer = dynamic(() => import('react-leaflet').then(m => m.TileLayer), { ssr: false })
+const MapContainer = dynamic<MapContainerProps>(
+  () => import('react-leaflet').then(m => m.MapContainer as any),
+  { ssr: false },
+)
+const TileLayer = dynamic<TileLayerProps>(
+  () => import('react-leaflet').then(m => m.TileLayer as any),
+  { ssr: false },
+)
 const DraggableMarker = dynamic(() => import('../../../map/draggable.marker').then(m => m.DraggableMarker), { ssr: false })
 import { FieldInputBuilderType } from '../field.input.builder.type'
 

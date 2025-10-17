@@ -25,5 +25,5 @@ void (async () => {
   })
   app.getHttpAdapter().options('*', cors())
 
-  await app.listen(process.env.PORT || 4100);
+  await app.listen(process.env.PORT || 4000);
 })()

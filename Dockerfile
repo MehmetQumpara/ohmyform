@@ -1,5 +1,5 @@
 ## Build UI
-FROM node:20-alpine as ui
+FROM node:16.20.2-alpine as ui
 
 WORKDIR /usr/src/ui
 
@@ -10,8 +10,8 @@ RUN curl -sf https://gobinaries.com/tj/node-prune | sh
 
 COPY ui/ .
 
-RUN yarn install --frozen-lockfile
-RUN yarn build
+RUN npm ci
+RUN npm run build
 
 # remove development dependencies
 RUN npm prune --production
@@ -21,7 +21,7 @@ RUN npm prune --production
 #RUN /usr/local/bin/node-prune
 
 ## Build API
-FROM node:20-alpine as api
+FROM node:16.20.2-alpine as api
 LABEL maintainer="OhMyForm <admin@ohmyform.com>"
 
 WORKDIR /usr/src/api
@@ -35,8 +35,8 @@ COPY api/ .
 
 RUN touch /usr/src/api/src/schema.gql && chown 9999:9999 /usr/src/api/src/schema.gql
 
-RUN yarn install --frozen-lockfile
-RUN yarn build
+RUN npm ci
+RUN npm run build
 
 # remove development dependencies
 RUN npm prune --production
@@ -45,7 +45,7 @@ RUN npm prune --production
 RUN /usr/local/bin/node-prune
 
 ## Production Image.
-FROM node:20-alpine
+FROM node:16.20.2-alpine
 
 RUN apk --update add supervisor nginx && rm -rf /var/cache/apk/*
 
@@ -70,4 +70,4 @@ COPY supervisord.conf /etc/supervisord.conf
 COPY nginx.conf /etc/nginx/nginx.conf
 
 CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]
-# CMD [ "yarn", "start:prod" ]
+# CMD [ "npm", "run", "start:prod" ]
