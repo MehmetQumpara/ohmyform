@@ -10,16 +10,25 @@ interface Props extends ButtonProps {
   color: string
 }
 
+// Safe darken/lighten with fallback for null colors
+const safeDarken = (amount: number, color: string | null): string => {
+  return color ? darken(amount, color) : '#cccccc'
+}
+
+const safeLighten = (amount: number, color: string | null): string => {
+  return color ? lighten(amount, color) : '#f0f0f0'
+}
+
 // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
 const Styled = styled(Button)`
-  background: ${(props: Props) => props.background};
-  color: ${(props: Props) => props.color};
-  border-color: ${(props: Props) => darken(0.1, props.background)};
+  background: ${(props: Props) => props.background || '#1890ff'};
+  color: ${(props: Props) => props.color || '#ffffff'};
+  border-color: ${(props: Props) => safeDarken(0.1, props.background)};
 
   :hover {
-    color: ${(props: Props) => props.highlight};
-    background-color: ${(props: Props) => lighten(0.1, props.background)};
-    border-color: ${(props: Props) => darken(0.1, props.highlight)};
+    color: ${(props: Props) => props.highlight || '#40a9ff'};
+    background-color: ${(props: Props) => safeLighten(0.1, props.background)};
+    border-color: ${(props: Props) => safeDarken(0.1, props.highlight)};
   }
 `
 

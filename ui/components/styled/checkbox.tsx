@@ -2,7 +2,7 @@ import { Checkbox } from 'antd'
 import { RadioProps } from 'antd/lib/radio/interface'
 import React from 'react'
 import styled from 'styled-components'
-import { FormPublicDesignFragment } from '../../graphql/fragment/form.public.fragment'
+import { FormPublicDesignFragment } from '../types/form.public.types'
 
 interface Props extends RadioProps {
   design: FormPublicDesignFragment

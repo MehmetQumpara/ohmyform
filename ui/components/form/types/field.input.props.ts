@@ -1,7 +1,7 @@
 import {
   FormPublicDesignFragment,
   FormPublicFieldFragment,
-} from '../../../graphql/fragment/form.public.fragment'
+} from '../types/form.public.types'
 
 export interface FieldInputProps {
   field: FormPublicFieldFragment

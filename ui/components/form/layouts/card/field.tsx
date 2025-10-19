@@ -2,7 +2,7 @@ import React from 'react'
 import {
   FormPublicDesignFragment,
   FormPublicFieldFragment,
-} from '../../../../graphql/fragment/form.public.fragment'
+} from '../types/form.public.types'
 import { StyledH1 } from '../../../styled/h1'
 import { StyledMarkdown } from '../../../styled/markdown'
 import { useRouter } from '../../../use.router'

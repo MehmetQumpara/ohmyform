@@ -21,13 +21,18 @@ module.exports = withPlugins([
     productionBrowserSourceMaps: true,
     publicRuntimeConfig: {
       environment,
-      // REST taban URL (GraphQL yerine)
-      apiBase: process.env.API_BASE || 'http://localhost:4000',
+      // REST taban URL - Client-side için HER ZAMAN localhost kullan (tarayıcıdan erişilebilir)
+      apiBase: 'http://localhost:4000',
+      // GraphQL endpoint
+      endpoint: 'http://localhost:4000/graphql',
       spa: !!process.env.SPA || false,
       mainBackground: process.env.MAIN_BACKGROUND || '#8FA2A6'
     },
     serverRuntimeConfig: {
-      apiBase: process.env.SERVER_API_BASE || process.env.API_BASE || 'http://localhost:4000',
+      // Server-side için Docker network hostname kullan
+      apiBase: process.env.SERVER_API_BASE || 'http://api:4000',
+      // GraphQL endpoint for server-side
+      endpoint: (process.env.SERVER_API_BASE || 'http://api:4000') + '/graphql',
     },
     env: {
       version,

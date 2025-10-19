@@ -3,15 +3,22 @@ import React from 'react'
 import ReactMarkdown from 'react-markdown'
 import { ReactMarkdownOptions } from 'react-markdown/lib/react-markdown'
 import styled from 'styled-components'
-import { FormPublicDesignFragment } from '../../graphql/fragment/form.public.fragment'
+import { FormPublicDesignFragment } from '../types/form.public.types'
 
 interface Props extends ReactMarkdownOptions {
   type: 'question' | 'answer'
   design: FormPublicDesignFragment
 }
 
-const getColor = (props: Props) =>
-  props.type === 'question' ? props.design.colors.question : props.design.colors.answer
+const getColor = (props: Props) => {
+  const color = props.type === 'question' ? props.design.colors.question : props.design.colors.answer
+  return color || (props.type === 'question' ? '#1890ff' : '#000000')
+}
+
+// Safe lighten with fallback for null colors
+const safeLighten = (amount: number, color: string | null): string => {
+  return color ? lighten(amount, color) : '#f0f0f0'
+}
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-member-access,@typescript-eslint/no-unsafe-assignment
 const Markdown = styled(ReactMarkdown)`
@@ -30,7 +37,7 @@ const Markdown = styled(ReactMarkdown)`
   }
 
   blockquote {
-    color: ${(props: Props) => lighten(0.5, getColor(props))};
+    color: ${(props: Props) => safeLighten(0.5, getColor(props))};
     padding-left: 20px;
     border-left: 10px rgba(0, 0, 0, 0.05) solid;
   }

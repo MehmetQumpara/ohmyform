@@ -1,6 +1,6 @@
 import { Space } from 'antd'
 import React from 'react'
-import { FormPublicPageButtonFragment } from '../../../graphql/fragment/form.public.fragment'
+import { FormPublicPageButtonFragment } from '../types/form.public.types'
 import { StyledButton } from '../../styled/button'
 
 interface Props {

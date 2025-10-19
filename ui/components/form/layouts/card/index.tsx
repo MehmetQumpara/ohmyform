@@ -16,8 +16,17 @@ type Step = 'start' | 'form' | 'end'
 
 const logger = debug('layout/card')
 
-const MyCard = styled.div<{ background: string }>`
-  background: ${(props) => darken(0.1, props.background)};
+// Safe darken/lighten with fallback for null colors
+const safeDarken = (amount: number, color: string | null): string => {
+  return color ? darken(amount, color) : '#cccccc'
+}
+
+const safeLighten = (amount: number, color: string | null): string => {
+  return color ? lighten(amount, color) : '#f0f0f0'
+}
+
+const MyCard = styled.div<{ background: string | null }>`
+  background: ${(props) => safeDarken(0.1, props.background)};
   height: 100%;
   min-height: 100vh;
   min-height: calc(var(--vh, 1vh) * 100);
@@ -25,8 +34,8 @@ const MyCard = styled.div<{ background: string }>`
   padding: 32px;
 
   .ant-card {
-    background: ${(props) => props.background};
-    border-color: ${(props) => lighten(0.4, props.background)};
+    background: ${(props) => props.background || '#ffffff'};
+    border-color: ${(props) => safeLighten(0.4, props.background)};
     width: 800px;
     margin: auto;
     max-width: 90%;

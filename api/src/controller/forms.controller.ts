@@ -1,9 +1,10 @@
 import { BadRequestException, Body, Controller, Delete, ForbiddenException, Get, HttpCode, HttpStatus, NotFoundException, Param, Post, Put, Query, UseGuards } from '@nestjs/common'
-import { AuthGuard } from '@nestjs/passport'
 import { Roles } from '../decorator/roles.decorator'
+import { Public } from '../decorator/public.decorator'
 import { User } from '../decorator/user.decorator'
 import { UserEntity } from '../entity/user.entity'
 import { RolesGuard } from '../guard/roles.guard'
+import { JwtAuthGuard } from '../guard/jwt.auth.guard'
 import { FormService } from '../service/form/form.service'
 import { FormCreateService } from '../service/form/form.create.service'
 import { FormDeleteService } from '../service/form/form.delete.service'
@@ -13,7 +14,7 @@ import { FormCreateInput } from '../dto/form/form.create.input'
 import { FormUpdateInput } from '../dto/form/form.update.input'
 
 @Controller('forms')
-@UseGuards(AuthGuard('jwt'), RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class FormsController {
   constructor(
     private readonly formService: FormService,
@@ -174,6 +175,107 @@ export class FormsController {
       total,
       limit: limitNum,
       start: startNum,
+    }
+  }
+
+  @Get(':id/public')
+  @Public()
+  async getFormPublic(@Param('id') id: string) {
+    const formId = this.idService.decode(id)
+    const form = await this.formService.findById(formId)
+
+    if (!form) {
+      throw new NotFoundException('Form not found')
+    }
+
+    // Only return public forms (isLive = true)
+    if (!form.isLive) {
+      throw new ForbiddenException('This form is not publicly available')
+    }
+
+    return {
+      id: this.idService.encode(form.id),
+      title: form.title,
+      created: form.created,
+      lastModified: form.lastModified,
+      language: form.language,
+      showFooter: form.showFooter,
+      anonymousSubmission: form.anonymousSubmission,
+      isLive: form.isLive,
+      fields: form.fields.map((field) => ({
+        id: this.idService.encode(field.id),
+        idx: field.idx,
+        title: field.title,
+        slug: field.slug,
+        type: field.type,
+        description: field.description,
+        required: field.required,
+        defaultValue: field.defaultValue,
+        options: field.options.map((option) => ({
+          id: this.idService.encode(option.id),
+          key: option.key,
+          title: option.title,
+          value: option.value,
+        })),
+        logic: field.logic.map((logic) => ({
+          id: this.idService.encode(logic.id),
+          action: logic.action,
+          formula: logic.formula,
+          enabled: logic.enabled,
+          jumpTo: logic.jumpTo ? this.idService.encode(logic.jumpTo.id) : null,
+          require: logic.require,
+          visible: logic.visible,
+          disable: logic.disable,
+        })),
+        rating: field.rating ? {
+          steps: field.rating.steps,
+          shape: field.rating.shape,
+        } : null,
+      })),
+      design: {
+        colors: {
+          background: form.design.colors.background,
+          question: form.design.colors.question,
+          answer: form.design.colors.answer,
+          button: form.design.colors.button,
+          buttonActive: form.design.colors.buttonActive,
+          buttonText: form.design.colors.buttonText,
+        },
+        font: form.design.font,
+        layout: form.design.layout,
+      },
+      startPage: {
+        id: this.idService.encode(form.startPage.id),
+        show: form.startPage.show,
+        title: form.startPage.title,
+        paragraph: form.startPage.paragraph,
+        buttonText: form.startPage.buttonText,
+        buttons: form.startPage.buttons.map((button) => ({
+          id: this.idService.encode(button.id),
+          url: button.url,
+          action: button.action,
+          text: button.text,
+          bgColor: button.bgColor,
+          activeColor: button.activeColor,
+          color: button.color,
+        })),
+      },
+      endPage: {
+        id: this.idService.encode(form.endPage.id),
+        show: form.endPage.show,
+        title: form.endPage.title,
+        paragraph: form.endPage.paragraph,
+        buttonText: form.endPage.buttonText,
+        buttons: form.endPage.buttons.map((button) => ({
+          id: this.idService.encode(button.id),
+          url: button.url,
+          action: button.action,
+          text: button.text,
+          bgColor: button.bgColor,
+          activeColor: button.activeColor,
+          color: button.color,
+        })),
+      },
     }
   }
 

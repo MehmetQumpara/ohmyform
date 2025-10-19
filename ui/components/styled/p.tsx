@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { FormPublicDesignFragment } from '../../graphql/fragment/form.public.fragment'
+import { FormPublicDesignFragment } from '../types/form.public.types'
 
 interface Props {
   type: 'question' | 'answer'

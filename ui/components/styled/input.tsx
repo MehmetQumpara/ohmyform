@@ -9,10 +9,15 @@ interface Props extends InputProps {
   design: FormPublicDesignFragment
 }
 
+// Safe transparentize with fallback for null colors
+const safeTransparentize = (amount: number, color: string | null): string => {
+  return color ? transparentize(amount, color) : 'rgba(0, 0, 0, 0.4)'
+}
+
 // eslint-disable-next-line @typescript-eslint/no-unsafe-call,@typescript-eslint/no-unsafe-assignment
 const Field = styled(Input)`
-  color: ${(props: Props) => props.design.colors.answer};
-  border-color: ${(props: Props) => props.design.colors.answer};
+  color: ${(props: Props) => props.design.colors.answer || '#000000'};
+  border-color: ${(props: Props) => props.design.colors.answer || '#d9d9d9'};
   background: none !important;
   border-right: none;
   border-top: none;
@@ -20,12 +25,12 @@ const Field = styled(Input)`
   border-radius: 0;
 
   :focus {
-    outline: ${(props: Props) => props.design.colors.answer} auto 5px;
+    outline: ${(props: Props) => props.design.colors.answer || '#1890ff'} auto 5px;
   }
 
   :hover,
   :active {
-    border-color: ${(props: Props) => props.design.colors.answer};
+    border-color: ${(props: Props) => props.design.colors.answer || '#40a9ff'};
   }
 
   &.ant-input-affix-wrapper {
@@ -34,15 +39,15 @@ const Field = styled(Input)`
 
   input {
     background: none !important;
-    color: ${(props: Props) => props.design.colors.answer};
+    color: ${(props: Props) => props.design.colors.answer || '#000000'};
 
     ::placeholder {
-      color: ${(props: Props) => transparentize(0.6, props.design.colors.answer)};
+      color: ${(props: Props) => safeTransparentize(0.6, props.design.colors.answer)};
     }
   }
 
   .anticon {
-    color: ${(props: Props) => props.design.colors.answer};
+    color: ${(props: Props) => props.design.colors.answer || '#000000'};
   }
 `
 

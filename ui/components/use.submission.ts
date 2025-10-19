@@ -1,23 +1,14 @@
-import { useMutation } from '@apollo/client'
 import debug from 'debug'
 import { useCallback, useEffect, useState } from 'react'
-import {
-  SUBMISSION_FINISH_MUTATION,
-  SubmissionFinishMutationData,
-  SubmissionFinishMutationVariables,
-} from '../graphql/mutation/submission.finish.mutation'
-import {
-  SUBMISSION_SET_FIELD_MUTATION,
-  SubmissionSetFieldMutationData,
-  SubmissionSetFieldMutationVariables,
-} from '../graphql/mutation/submission.set.field.mutation'
-import {
-  SUBMISSION_START_MUTATION,
-  SubmissionStartMutationData,
-  SubmissionStartMutationVariables,
-} from '../graphql/mutation/submission.start.mutation'
+import { apiClient } from '../lib/api.client'
 
 const logger = debug('useSubmission')
+
+export interface SubmissionData {
+  id: string
+  percentageComplete: number
+  timeElapsed: number
+}
 
 export interface Submission {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -28,40 +19,35 @@ export interface Submission {
 export const useSubmission = (formId: string): Submission => {
   const [submission, setSubmission] = useState<{ id: string; token: string }>()
 
-  const [start] = useMutation<SubmissionStartMutationData, SubmissionStartMutationVariables>(
-    SUBMISSION_START_MUTATION
-  )
-  const [save] = useMutation<SubmissionSetFieldMutationData, SubmissionSetFieldMutationVariables>(
-    SUBMISSION_SET_FIELD_MUTATION
-  )
-  const [submit] = useMutation<SubmissionFinishMutationData, SubmissionFinishMutationVariables>(
-    SUBMISSION_FINISH_MUTATION
-  )
-
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const token = [...Array(40)].map(() => Math.random().toString(36)[2]).join('')
 
-    start({
-      variables: {
-        form: formId,
-        submission: {
-          token,
-          device: {
-            name: /Mobi/i.test(window.navigator.userAgent) ? 'mobile' : 'desktop',
-            type: window.navigator.userAgent,
-          },
-        },
-      },
-    })
-      .then(({ data }) => {
-        logger('submission id = %O', data.submission.id)
+    const startSubmission = async () => {
+      try {
+        const result = await apiClient.post<SubmissionData>(
+          `/submissions/start/${formId}`,
+          {
+            token,
+            device: {
+              name: /Mobi/i.test(window.navigator.userAgent) ? 'mobile' : 'desktop',
+              type: window.navigator.userAgent,
+            },
+          }
+        )
+        logger('submission id = %O', result.id)
         setSubmission({
-          id: data.submission.id,
+          id: result.id,
           token,
         })
-      })
-      .catch((e: Error) => logger('failed to start submission %J', e))
+      } catch (e) {
+        logger('failed to start submission %J', e)
+      }
+    }
+
+    if (formId) {
+      startSubmission()
+    }
   }, [formId])
 
   const setField = useCallback(
@@ -71,29 +57,46 @@ export const useSubmission = (formId: string): Submission => {
         return
       }
 
+      if (!submission) {
+        logger('submission not started yet')
+        return
+      }
+
       logger('save field id=%O %O', fieldId, data)
-      await save({
-        variables: {
-          submission: submission.id,
-          field: {
+      try {
+        await apiClient.put<SubmissionData>(
+          `/submissions/${submission.id}/field`,
+          {
             token: submission.token,
             field: fieldId,
             data: JSON.stringify(data),
-          },
-        },
-      })
+          }
+        )
+      } catch (e) {
+        logger('failed to save field %J', e)
+        throw e
+      }
     },
     [submission]
   )
 
   const finish = useCallback(async () => {
+    if (!submission) {
+      logger('submission not started yet')
+      return
+    }
+
     logger('finish submission!!', formId)
-    await submit({
-      variables: {
-        submission: submission.id,
-      },
-    })
-  }, [submission])
+    try {
+      await apiClient.post<SubmissionData>(
+        `/submissions/${submission.id}/finish`,
+        { token: submission.token }
+      )
+    } catch (e) {
+      logger('failed to finish submission %J', e)
+      throw e
+    }
+  }, [submission, formId])
 
   return {
     setField,

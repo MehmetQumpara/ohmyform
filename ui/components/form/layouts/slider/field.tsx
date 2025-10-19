@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next'
 import {
   FormPublicDesignFragment,
   FormPublicFieldFragment,
-} from '../../../../graphql/fragment/form.public.fragment'
+} from '../types/form.public.types'
 import { StyledButton } from '../../../styled/button'
 import { StyledH1 } from '../../../styled/h1'
 import { StyledMarkdown } from '../../../styled/markdown'

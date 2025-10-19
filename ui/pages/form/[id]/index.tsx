@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next'
 import { CardLayout } from '../../../components/form/layouts/card'
 import { SliderLayout } from '../../../components/form/layouts/slider'
 import { useSubmission } from '../../../components/use.submission'
-import { useFormPublicQuery } from '../../../graphql/query/form.public.query'
+import { useFormPublicQuery } from '../../../hooks/useFormPublicQuery'
 
 const Index: NextPage = () => {
   const { t, i18n } = useTranslation()
