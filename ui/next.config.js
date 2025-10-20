@@ -21,10 +21,10 @@ module.exports = withPlugins([
     productionBrowserSourceMaps: true,
     publicRuntimeConfig: {
       environment,
-      // REST taban URL - Client-side için HER ZAMAN localhost kullan (tarayıcıdan erişilebilir)
-      apiBase: 'http://localhost:4000',
+      // REST taban URL - Client-side için RELATIVE PATH kullan (nginx reverse proxy üzerinden)
+      apiBase: process.env.NEXT_PUBLIC_API_URL || '/api',
       // GraphQL endpoint
-      endpoint: 'http://localhost:4000/graphql',
+      endpoint: process.env.NEXT_PUBLIC_API_URL ? `${process.env.NEXT_PUBLIC_API_URL}/graphql` : '/api/graphql',
       spa: !!process.env.SPA || false,
       mainBackground: process.env.MAIN_BACKGROUND || '#8FA2A6'
     },
