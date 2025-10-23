@@ -17,7 +17,7 @@ import { SubmissionEntity } from './submission.entity'
 import { UserEntity } from './user.entity'
 import { VisitorEntity } from './visitor.entity'
 
-@Entity({ name: 'form' })
+@Entity({ name: 'form', schema: 'survey_test' })
 export class FormEntity {
   @PrimaryGeneratedColumn()
   public id: number

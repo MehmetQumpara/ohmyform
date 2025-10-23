@@ -8,9 +8,10 @@ services:
     environment:
       NODE_ENV: production
       DATABASE_DRIVER: postgres
-      DATABASE_URL: postgres://postgres:5396@host.docker.internal:5432/ohmyform
+      DATABASE_URL: postgresql://qumpara:nobium@195.244.38.27:5434/qumpara_test4
+      DATABASE_SCHEMA: survey_test
       DATABASE_SSL: "false"
-      DATABASE_MIGRATE: "true"
+      DATABASE_MIGRATE: "false"
       UI_ORIGIN: http://localhost:4100
     extra_hosts:
       - "host.docker.internal:host-gateway"

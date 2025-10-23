@@ -12,7 +12,7 @@ import { GeoLocationEmbedded } from './embedded/geo.location.embedded'
 import { FormEntity } from './form.entity'
 import { SubmissionEntity } from './submission.entity'
 
-@Entity({ name: 'form_visitor' })
+@Entity({ name: 'form_visitor', schema: 'survey_test' })
 export class VisitorEntity {
   @PrimaryGeneratedColumn()
   public id: number

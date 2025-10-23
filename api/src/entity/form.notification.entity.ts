@@ -2,7 +2,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { FormEntity } from './form.entity'
 import { FormFieldEntity } from './form.field.entity'
 
-@Entity({ name: 'form_notification' })
+@Entity({ name: 'form_notification', schema: 'survey_test' })
 export class FormNotificationEntity {
   @PrimaryGeneratedColumn()
   public id: number

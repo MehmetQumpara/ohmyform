@@ -3,7 +3,7 @@ import { FormFieldEntity } from './form.field.entity'
 
 export type FormFieldLogicAction = 'visible' | 'require' | 'disable' | 'jumpTo'
 
-@Entity({ name: 'form_field_logic' })
+@Entity({ name: 'form_field_logic', schema: 'survey_test' })
 export class FormFieldLogicEntity {
   @PrimaryGeneratedColumn()
   public id: number

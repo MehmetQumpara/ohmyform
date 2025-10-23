@@ -23,6 +23,23 @@ export class SubmissionStartService {
     user?: UserEntity,
     ipAddr?: string,
   ): Promise<SubmissionEntity> {
+    // Generate token hash first
+    const tokenHash = await this.tokenService.hash(input.token)
+
+    // Check if this token has already been used for this form
+    const existingSubmission = await this.submissionRepository.findOne({
+      where: {
+        form: { id: form.id },
+        tokenHash: tokenHash,
+      },
+    })
+
+    if (existingSubmission) {
+      // Return existing submission instead of creating a duplicate
+      return existingSubmission
+    }
+
+    // Create new submission
     const submission = new SubmissionEntity()
 
     if (!form.anonymousSubmission) {
@@ -40,7 +57,7 @@ export class SubmissionStartService {
     submission.device.name = input.device.name
     submission.device.type = input.device.type
 
-    submission.tokenHash = await this.tokenService.hash(input.token)
+    submission.tokenHash = tokenHash
 
     return await this.submissionRepository.save(submission)
   }

@@ -1,7 +1,7 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm'
 import { FormFieldEntity } from './form.field.entity'
 
-@Entity({ name: 'form_field_option' })
+@Entity({ name: 'form_field_option', schema: 'survey_test' })
 export class FormFieldOptionEntity {
   @PrimaryGeneratedColumn()
   public id: number

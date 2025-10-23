@@ -4,7 +4,7 @@ import { FormEntity } from './form.entity'
 import { FormFieldLogicEntity } from './form.field.logic.entity'
 import { FormFieldOptionEntity } from './form.field.option.entity'
 
-@Entity({ name: 'form_field' })
+@Entity({ name: 'form_field', schema: 'survey_test' })
 export class FormFieldEntity {
   @PrimaryGeneratedColumn()
   public id: number

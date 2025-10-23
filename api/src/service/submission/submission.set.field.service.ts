@@ -31,25 +31,35 @@ export class SubmissionSetFieldService {
 
     let field = submission.fields.find(field => field.field.id === formFieldId)
 
-    submission.timeElapsed = dayjs().diff(dayjs(submission.created), 'second')
+    // Calculate time elapsed and ensure it's never negative
+    const elapsed = dayjs().diff(dayjs(submission.created), 'second')
+    submission.timeElapsed = Math.max(0, elapsed)
 
     if (field) {
+      // Update existing field
       field.content = this.parseData(field, input.data)
 
       await this.submissionRepository.save(submission)
       await this.submissionFieldRepository.save(field)
     } else {
+      // Create new field
+      const formField = submission.form.fields.find(field => field.id === formFieldId)
+      
+      if (!formField) {
+        throw new Error(`Form field with id ${formFieldId} not found in form ${submission.form.id}`)
+      }
+
       field = new SubmissionFieldEntity()
 
       field.submission = submission
-      field.field = submission.form.fields.find(field => field.id === formFieldId)
-      field.type = field.field.type
+      field.field = formField
+      field.type = formField.type
       field.content = this.parseData(field, input.data)
 
       submission.fields.push(field)
-      submission.percentageComplete = (submission.fields.length) / submission.form.fields.length
+      submission.percentageComplete = Math.min(1, (submission.fields.length) / submission.form.fields.length)
 
-      // figure out why this cannot be after field save...
+      // Save submission first to ensure it has an ID, then save the field
       await this.submissionRepository.save(submission)
       await this.submissionFieldRepository.save(field)
     }

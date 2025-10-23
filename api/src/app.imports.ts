@@ -138,18 +138,28 @@ export const imports = [
           throw new Error('unsupported driver')
       }
 
+      // Parse DATABASE_MIGRATE properly (it's a string "true" or "false")
+      const migrateString = configService.get<string>('DATABASE_MIGRATE', 'true')
+      const migrationsRun = migrateString === 'true'
+      
+      // Log schema configuration for debugging
+      const schema = configService.get<string>('DATABASE_SCHEMA', 'public')
+      console.log('[TypeORM] Schema configuration:', schema)
+      console.log('[TypeORM] Migrations enabled:', migrationsRun)
+
       return ({
         name: 'ohmyform',
         synchronize: false,
         type,
         url: configService.get<string>('DATABASE_URL'),
+        schema,
         database: type === 'sqlite' ? configService.get<string>('DATABASE_URL', 'data.sqlite').replace('sqlite://', '') : undefined,
         ssl: configService.get<string>('DATABASE_SSL', 'false') === 'true' ? { rejectUnauthorized: false } : false,
         entityPrefix: configService.get<string>('DATABASE_TABLE_PREFIX', ''),
         logging: configService.get<string>('DATABASE_LOGGING', 'false') === 'true',
         entities,
         migrations: [`${__dirname}/**/migrations/${migrationFolder}/**/*{.ts,.js}`],
-        migrationsRun: configService.get<boolean>('DATABASE_MIGRATE', true),
+        migrationsRun,
         migrationsTransactionMode,
       })
     },

@@ -1,7 +1,7 @@
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm'
 import { rolesType } from '../config/roles'
 
-@Entity({ name: 'user' })
+@Entity({ name: 'user', schema: 'survey_test' })
 export class UserEntity {
   @PrimaryGeneratedColumn()
   public id: number

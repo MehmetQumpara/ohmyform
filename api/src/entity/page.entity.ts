@@ -1,7 +1,7 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm'
 import { PageButtonEntity } from './page.button.entity'
 
-@Entity({ name: 'page' })
+@Entity({ name: 'page', schema: 'survey_test' })
 export class PageEntity {
   @PrimaryGeneratedColumn()
   public id: number

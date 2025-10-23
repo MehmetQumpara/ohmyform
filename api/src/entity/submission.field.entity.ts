@@ -10,7 +10,7 @@ export type SubmissionFieldContent = Simple | Simple[] | {
   }
 }
 
-@Entity({ name: 'submission_field' })
+@Entity({ name: 'submission_field', schema: 'survey_test' })
 export class SubmissionFieldEntity {
   @PrimaryGeneratedColumn()
   public id: number
