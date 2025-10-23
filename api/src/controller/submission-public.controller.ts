@@ -50,6 +50,24 @@ export class SubmissionPublicController {
     }
   }
 
+  @Post('start-with-token')
+  @Public()
+  @HttpCode(HttpStatus.CREATED)
+  async startSubmissionWithToken(
+    @Body('formToken') formToken: string,
+    @Body() input: SubmissionStartInput,
+    @IpAddress() ipAddr: string,
+    @User() user?: UserEntity,
+  ) {
+    const submission = await this.submissionStartService.startWithToken(formToken, input, user, ipAddr)
+
+    return {
+      id: this.idService.encode(submission.id),
+      percentageComplete: submission.percentageComplete,
+      timeElapsed: submission.timeElapsed,
+    }
+  }
+
   @Put(':id/field')
   @Public()
   async setField(

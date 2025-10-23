@@ -70,6 +70,9 @@ export class FormEntity {
   @Column({ type: 'boolean', name: 'is_active', default: true })
   public is_active: boolean;
 
+  @Column({ type: 'varchar', length: 255, name: 'form_token' })
+  public formToken: string;
+
   @CreateDateColumn()
   public created: Date
 

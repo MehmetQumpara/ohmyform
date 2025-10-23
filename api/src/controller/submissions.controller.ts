@@ -77,6 +77,7 @@ export class SubmissionsController {
         id: this.idService.encode(form.id),
         title: form.title,
         language: form.language,
+        formToken: form.formToken,
       },
     }
   }

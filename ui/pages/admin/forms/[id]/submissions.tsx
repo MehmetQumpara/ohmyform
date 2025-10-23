@@ -134,9 +134,10 @@ const Submissions: NextPage = () => {
         </Link>,
         <Button
           key={'web'}
-          href={`/form/${router.query.id as string}`}
+          href={form ? `/anket?token=${form.formToken}` : '#'}
           target={'_blank'}
           type={'primary'}
+          disabled={!form}
         >
           {t('submission:add')}
         </Button>,

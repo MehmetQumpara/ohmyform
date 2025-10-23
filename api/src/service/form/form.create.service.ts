@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
+import { v4 as uuidv4 } from 'uuid'
 import { FormCreateInput } from '../../dto/form/form.create.input'
 import { FormEntity } from '../../entity/form.entity'
 import { PageEntity } from '../../entity/page.entity'
@@ -25,6 +26,7 @@ export class FormCreateService {
     form.anonymousSubmission = Boolean(input.anonymousSubmission)
     form.language = input.language || 'en'
     form.design.layout = input.layout
+    form.formToken = uuidv4()
 
 
     form.endPage = this.formPageCreateService.create(input.endPage)

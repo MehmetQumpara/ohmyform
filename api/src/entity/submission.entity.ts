@@ -53,6 +53,9 @@ export class SubmissionEntity {
   @ManyToOne(() => UserEntity, { eager: true })
   public user?: UserEntity
 
+  @Column({ type: 'varchar', length: 255, nullable: true })
+  public invitationtoken?: string
+
   @CreateDateColumn()
   public created: Date
 

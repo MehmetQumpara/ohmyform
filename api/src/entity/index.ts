@@ -8,6 +8,7 @@ import { PageButtonEntity } from './page.button.entity'
 import { PageEntity } from './page.entity'
 import { SubmissionEntity } from './submission.entity'
 import { SubmissionFieldEntity } from './submission.field.entity'
+import { SurveyInvitationEntity } from './survey.invitation.entity'
 import { UserEntity } from './user.entity'
 import { VisitorEntity } from './visitor.entity'
 
@@ -22,6 +23,7 @@ export const entities = [
   PageEntity,
   SubmissionEntity,
   SubmissionFieldEntity,
+  SurveyInvitationEntity,
   UserEntity,
   VisitorEntity,
 ]

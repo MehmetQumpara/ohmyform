@@ -166,6 +166,7 @@ export class FormsController {
         title: form.title,
         isLive: form.isLive,
         language: form.language,
+        formToken: form.formToken,
         admin: {
           id: this.idService.encode(form.admin.id),
           email: form.admin.email,

@@ -147,14 +147,16 @@ const Index: NextPage = () => {
             </Popconfirm>
 
             {row.isLive && (
-              <Button href={`/form/${row.id}`} target={'_blank'}>
-                <GlobalOutlined />
-              </Button>
+              <Tooltip title={'Preview Form'}>
+                <Button href={`/anket?token=${row.formToken}`} target={'_blank'}>
+                  <GlobalOutlined />
+                </Button>
+              </Tooltip>
             )}
 
             {!row.isLive && (
-              <Tooltip title={'Not Public accessible!'} placement={'left'}>
-                <Button href={`/form/${row.id}`} target={'_blank'}>
+              <Tooltip title={'Preview Form (Not Public)'} placement={'left'}>
+                <Button href={`/anket?token=${row.formToken}`} target={'_blank'}>
                   <WarningOutlined />
                 </Button>
               </Tooltip>

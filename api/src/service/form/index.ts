@@ -5,6 +5,7 @@ import { FormPageCreateService } from './form.page.create.service'
 import { FormPageUpdateService } from './form.page.update.service'
 import { FormService } from './form.service'
 import { FormStatisticService } from './form.statistic.service'
+import { FormTokenService } from './form.token.service'
 import { FormUpdateService } from './form.update.service'
 
 export const formServices = [
@@ -15,5 +16,6 @@ export const formServices = [
   FormPageUpdateService,
   FormService,
   FormStatisticService,
+  FormTokenService,
   FormUpdateService,
 ]
