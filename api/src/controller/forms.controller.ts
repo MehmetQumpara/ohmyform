@@ -300,6 +300,7 @@ export class FormsController {
       showFooter: form.showFooter,
       anonymousSubmission: form.anonymousSubmission,
       isLive: form.isLive,
+      formToken: form.formToken,
       fields: form.fields.map((field) => ({
         id: this.idService.encode(field.id),
         idx: field.idx,

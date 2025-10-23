@@ -1,55 +1,56 @@
-import { ErrorPage } from 'components/error.page'
 import { LoadingPage } from 'components/loading.page'
 import { NextPage } from 'next'
 import { useRouter } from 'next/router'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
-import { CardLayout } from '../../../components/form/layouts/card'
-import { SliderLayout } from '../../../components/form/layouts/slider'
-import { useSubmission } from '../../../components/use.submission'
-import { useFormPublicQuery } from '../../../hooks/useFormPublicQuery'
 
 const Index: NextPage = () => {
-  const { t, i18n } = useTranslation()
+  const { t } = useTranslation()
   const router = useRouter()
-  const submission = useSubmission(router.query.id as string)
-
-  const { loading, data, error } = useFormPublicQuery({
-    variables: {
-      id: router.query.id as string,
-    },
-  })
+  const [isRedirecting, setIsRedirecting] = useState(false)
 
   useEffect(() => {
-    // check form language to switch to!
-    if (!data) {
+    const formId = router.query.id as string
+    if (!formId) {
       return
     }
 
-    if (i18n.language !== data.form.language) {
-      // TODO prompt for language change if is not a match!
-      i18n
-        .changeLanguage(data.form.language)
-        .catch((e: Error) => console.error('failed to change language', e))
+    setIsRedirecting(true)
+
+    // Form ID'den token almak için API çağrısı yapıp redirect edelim
+    // Veya direkt error page gösterelim çünkü artık token bazlı sistem kullanıyoruz
+    const fetchFormToken = async () => {
+      try {
+        const token = localStorage.getItem('access')
+        const API_URL = process.env.NEXT_PUBLIC_API_URL || '/api'
+        
+        const response = await fetch(`${API_URL}/forms/${formId}`, {
+          headers: {
+            'Authorization': token ? `Bearer ${token}` : '',
+          },
+        })
+
+        if (response.ok) {
+          const data = await response.json()
+          if (data.formToken) {
+            // Token bazlı sayfaya yönlendir
+            router.replace(`/anket?token=${data.formToken}`)
+            return
+          }
+        }
+        
+        // Token bulunamazsa ana sayfaya yönlendir
+        router.replace('/')
+      } catch (e) {
+        console.error('Failed to fetch form token:', e)
+        router.replace('/')
+      }
     }
-  }, [data])
 
-  if (loading) {
-    return <LoadingPage message={t('form:build')} />
-  }
+    fetchFormToken()
+  }, [router.query.id])
 
-  if (error) {
-    return <ErrorPage />
-  }
-
-  switch (data.form.design.layout) {
-    case 'card':
-      return <CardLayout form={data.form} submission={submission} />
-
-    case 'slider':
-    default:
-      return <SliderLayout form={data.form} submission={submission} />
-  }
+  return <LoadingPage message={t('form:redirecting') || 'Redirecting...'} />
 }
 
 export default Index
