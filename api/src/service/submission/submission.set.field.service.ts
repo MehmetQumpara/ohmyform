@@ -27,7 +27,19 @@ export class SubmissionSetFieldService {
   }
 
   async saveField(submission: SubmissionEntity, input: SubmissionSetFieldInput): Promise<void> {
-    const formFieldId = this.idService.decode(input.field)
+    let formFieldId: number
+    
+    // Try to decode the field ID as an encoded ID, fallback to parsing as number
+    try {
+      formFieldId = this.idService.decode(input.field)
+    } catch (e) {
+      // If decode fails, try to parse as a regular number (for direct numeric IDs)
+      const parsed = parseInt(input.field, 10)
+      if (isNaN(parsed)) {
+        throw new Error(`Invalid field ID: ${input.field}`)
+      }
+      formFieldId = parsed
+    }
 
     let field = submission.fields.find(field => field.field.id === formFieldId)
 

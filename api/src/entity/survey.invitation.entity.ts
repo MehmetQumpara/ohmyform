@@ -7,7 +7,7 @@ export class SurveyInvitationEntity {
   invitationToken: string // C# GUID
 
   @Column({ name: 'form_id', type: 'varchar', length: 100 })
-  formId: string // C# GUID (form.form_token ile eşleşir)
+  formId: string // Form sayısal ID'si (forms.id ile eşleşir)
 
   @Column({ name: 'msisdn', type: 'varchar', length: 50 })
   msisdn: string

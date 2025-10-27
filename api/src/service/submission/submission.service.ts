@@ -59,7 +59,14 @@ export class SubmissionService {
   }
 
   async findById(id: number): Promise<SubmissionEntity> {
-    const submission = await this.submissionRepository.findOne(id);
+    const submission = await this.submissionRepository
+      .createQueryBuilder('s')
+      .leftJoinAndSelect('s.form', 'form')
+      .leftJoinAndSelect('form.fields', 'fields')
+      .leftJoinAndSelect('form.hooks', 'hooks')
+      .leftJoinAndSelect('s.fields', 'submissionFields')
+      .where('s.id = :id', { id })
+      .getOne();
 
     if (!submission) {
       throw new Error('no form found')

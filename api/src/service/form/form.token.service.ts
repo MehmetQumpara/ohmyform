@@ -36,12 +36,14 @@ export class FormTokenService {
         throw new BadRequestException('This invitation link has already been used')
       }
 
-      // form_id ile form'u bul (form_id aslında form_token)
+      // form_id ile form'u bul (form_id form sayısal ID'si)
+      const formId = parseInt(invitation.formId, 10)
       const form = await this.formRepository.findOne({
-        where: { formToken: invitation.formId }
+        where: { id: formId }
       })
 
       if (!form) {
+        console.error(`Form not found for invitation token: ${token}, formId: ${invitation.formId}`)
         throw new NotFoundException('Form not found')
       }
 

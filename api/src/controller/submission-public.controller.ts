@@ -54,11 +54,16 @@ export class SubmissionPublicController {
   @Public()
   @HttpCode(HttpStatus.CREATED)
   async startSubmissionWithToken(
-    @Body('formToken') formToken: string,
-    @Body() input: SubmissionStartInput,
+    @Body() body: any,
     @IpAddress() ipAddr: string,
     @User() user?: UserEntity,
   ) {
+    const formToken = body.formToken
+    const input: SubmissionStartInput = {
+      token: body.token,
+      device: body.device,
+    }
+
     const submission = await this.submissionStartService.startWithToken(formToken, input, user, ipAddr)
 
     return {
