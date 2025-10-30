@@ -114,10 +114,8 @@ export class SubmissionStartService {
 
     const savedSubmission = await this.submissionRepository.save(submission)
 
-    // Mark invitation as used
-    if (tokenResult.isInvitation && tokenResult.invitationToken) {
-      await this.formTokenService.markInvitationAsUsed(tokenResult.invitationToken)
-    }
+    // NOTE: Invitation will be marked as used when submission is finished,
+    // not here, to allow users to refresh the page without losing access
 
     return savedSubmission
   }

@@ -24,6 +24,7 @@ export class FormPublicController {
         showFooter: result.form.showFooter,
         isLive: result.form.isLive,
         anonymousSubmission: result.form.anonymousSubmission,
+        allowRestart: result.form.allowRestart,
         design: result.form.design,
         startPage: result.form.startPage,
         endPage: result.form.endPage,

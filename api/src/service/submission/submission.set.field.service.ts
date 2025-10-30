@@ -8,6 +8,7 @@ import { SubmissionSetFieldInput } from '../../dto/submission/submission.set.fie
 import { SubmissionEntity } from '../../entity/submission.entity'
 import { SubmissionFieldContent, SubmissionFieldEntity } from '../../entity/submission.field.entity'
 import { IdService } from '../id.service'
+import { FormTokenService } from '../form/form.token.service'
 import { SubmissionHookService } from './submission.hook.service'
 import { SubmissionNotificationService } from './submission.notification.service'
 
@@ -21,6 +22,7 @@ export class SubmissionSetFieldService {
     private readonly webHook: SubmissionHookService,
     private readonly notifications: SubmissionNotificationService,
     private readonly idService: IdService,
+    private readonly formTokenService: FormTokenService,
     private readonly logger: PinoLogger,
   ) {
     logger.setContext(this.constructor.name)
@@ -88,6 +90,18 @@ export class SubmissionSetFieldService {
     }, {
       percentageComplete: 1,
     })
+
+    // Mark invitation as used when submission is finished
+    if (submission.invitationtoken) {
+      await this.formTokenService.markInvitationAsUsed(submission.invitationtoken)
+        .catch(e => {
+          this.logger.error({
+            submission: submission.id,
+            invitationToken: submission.invitationtoken,
+            error: serializeError(e),
+          }, 'failed to mark invitation as used')
+        })
+    }
 
     this.webHook.process(submission).catch(e => {
       this.logger.error({

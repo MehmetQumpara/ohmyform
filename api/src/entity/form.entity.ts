@@ -64,6 +64,9 @@ export class FormEntity {
   @Column({ default: false })
   public anonymousSubmission: boolean;
 
+  @Column({ type: 'boolean', name: 'allow_restart', default: false })
+  public allowRestart: boolean;
+
   @Column(() => DesignEmbedded)
   public design: DesignEmbedded = new DesignEmbedded();
 

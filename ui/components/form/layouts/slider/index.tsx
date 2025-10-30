@@ -112,7 +112,13 @@ export const SliderLayout: React.FC<LayoutProps> = (props) => {
             .filter((e) => e !== null),
           endPage.show ? (
             <SwiperSlide key={'end'}>
-              <FormPage page={endPage} design={design} next={finish} prev={goPrev} />
+              <FormPage 
+                page={endPage} 
+                design={design} 
+                allowRestart={props.form.allowRestart}
+                next={finish} 
+                prev={goPrev} 
+              />
             </SwiperSlide>
           ) : undefined,
         ].filter((e) => !!e)}

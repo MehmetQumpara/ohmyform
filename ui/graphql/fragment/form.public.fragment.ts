@@ -73,6 +73,7 @@ export interface FormPublicFragment {
   created: string
   language: string
   showFooter: boolean
+  allowRestart?: boolean
   fields: FormPublicFieldFragment[]
   design: FormPublicDesignFragment
   startPage: FormPublicPageFragment

@@ -37,6 +37,8 @@
     "action": "Action",
     "activeColor": "Active Color",
     "addButton": "Add Button",
+    "allowRestart": "Allow Restart",
+    "allowRestartInfo": "Show 'Restart Form' button on the end page",
     "bgColor": "Background Color",
     "buttons": "Buttons",
     "color": "Color",

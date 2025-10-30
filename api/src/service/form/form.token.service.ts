@@ -32,9 +32,8 @@ export class FormTokenService {
 
     if (invitation) {
       // Davet linki bulundu
-      if (invitation.isUsed) {
-        throw new BadRequestException('This invitation link has already been used')
-      }
+      // NOTE: No longer checking isUsed here - invitation is marked as used
+      // only when submission is finished, allowing users to refresh the page
 
       // form_id ile form'u bul (form_id form sayısal ID'si)
       const formId = parseInt(invitation.formId, 10)

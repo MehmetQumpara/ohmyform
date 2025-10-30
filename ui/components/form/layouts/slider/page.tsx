@@ -14,12 +14,13 @@ interface Props {
   page: FormPublicPageFragment
   design: FormPublicDesignFragment
   className?: string
+  allowRestart?: boolean
 
   next: () => void
   prev: () => void
 }
 
-export const FormPage: React.FC<Props> = ({ page, design, next, prev, className, ...props }) => {
+export const FormPage: React.FC<Props> = ({ page, design, allowRestart, next, prev, className, ...props }) => {
   const { t } = useTranslation()
 
   if (!page.show) {
@@ -54,15 +55,17 @@ export const FormPage: React.FC<Props> = ({ page, design, next, prev, className,
 
         <div style={{ flex: 1 }} />
 
-        <StyledButton
-          background={design.colors.button}
-          color={design.colors.buttonText}
-          highlight={design.colors.buttonActive}
-          size={'large'}
-          onClick={next}
-        >
-          {page.buttonText || t('form:continue')}
-        </StyledButton>
+        {allowRestart !== false && (
+          <StyledButton
+            background={design.colors.button}
+            color={design.colors.buttonText}
+            highlight={design.colors.buttonActive}
+            size={'large'}
+            onClick={next}
+          >
+            {page.buttonText || t('form:continue')}
+          </StyledButton>
+        )}
       </div>
     </div>
   )

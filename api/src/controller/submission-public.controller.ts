@@ -75,7 +75,7 @@ export class SubmissionPublicController {
 
   @Put(':id/field')
   @Public()
-  async setField(
+  async setField( 
     @Param('id') id: string,
     @Body() input: SubmissionSetFieldInput,
   ) {

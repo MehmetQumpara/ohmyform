@@ -20,6 +20,17 @@ export const EndPageTab: React.FC<TabPaneProps> = (props) => {
         <Switch />
       </Form.Item>
 
+      <Form.Item
+        label={t('form:endPage.allowRestart')}
+        name={[
+          'form', 'allowRestart',
+        ]}
+        valuePropName={'checked'}
+        extra={t('form:endPage.allowRestartInfo')}
+      >
+        <Switch />
+      </Form.Item>
+
       <Form.Item label={t('form:endPage.title')} name={[
         'form', 'endPage', 'title',
       ]}>

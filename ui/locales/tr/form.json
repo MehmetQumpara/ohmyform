@@ -37,6 +37,8 @@
     "action": "Eylem",
     "activeColor": "Aktif Renk",
     "addButton": "Düğme Ekle",
+    "allowRestart": "Yeniden Başlatmaya İzin Ver",
+    "allowRestartInfo": "Bitiş sayfasında 'Formu Yeniden Başlat' düğmesini göster",
     "bgColor": "Arka Plan Rengi",
     "buttons": "Düğmeler",
     "color": "Renk",

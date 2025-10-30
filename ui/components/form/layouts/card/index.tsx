@@ -213,6 +213,7 @@ export const CardLayout: React.FC<LayoutProps> = (props) => {
           <Page
             page={endPage}
             design={design}
+            allowRestart={props.form.allowRestart}
             next={() => {
               window.location.reload()
             }}

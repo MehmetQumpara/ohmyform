@@ -13,12 +13,13 @@ import { PageButtons } from '../page.buttons'
 interface Props {
   page: FormPublicPageFragment
   design: FormPublicDesignFragment
+  allowRestart?: boolean
 
   next?: () => void
   prev?: () => void
 }
 
-export const Page: React.FC<Props> = ({ design, page, next, prev }) => {
+export const Page: React.FC<Props> = ({ design, page, allowRestart, next, prev }) => {
   const { t } = useTranslation()
 
   return (
@@ -48,7 +49,7 @@ export const Page: React.FC<Props> = ({ design, page, next, prev }) => {
 
         <div style={{ flex: 1 }} />
 
-        {next && (
+        {next && allowRestart !== false && (
           <StyledButton
             background={design.colors.button}
             color={design.colors.buttonText}
