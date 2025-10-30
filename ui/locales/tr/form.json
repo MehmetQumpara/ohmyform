@@ -28,6 +28,7 @@
     "font": "Yazı Tipi",
     "layout": {
       "card": "Kart",
+      "modern": "Modern",
       "slider": "Kaydırıcı"
     },
     "layouts": "Düzen"

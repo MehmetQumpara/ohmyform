@@ -5,6 +5,7 @@ import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { CardLayout } from '../components/form/layouts/card'
+import { ModernLayout } from '../components/form/layouts/modern'
 import { SliderLayout } from '../components/form/layouts/slider'
 import { useSubmissionWithToken } from '../components/use.submission.token'
 import { apiClient } from '../lib/api.client'
@@ -78,6 +79,9 @@ const AnketPage: NextPage = () => {
   switch (formData.form.design.layout) {
     case 'card':
       return <CardLayout {...layoutProps} />
+
+    case 'modern':
+      return <ModernLayout {...layoutProps} />
 
     case 'slider':
     default:

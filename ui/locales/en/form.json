@@ -28,6 +28,7 @@
     "font": "Font",
     "layout": {
       "card": "Card",
+      "modern": "Modern",
       "slider": "Slider"
     },
     "layouts": "Layout"

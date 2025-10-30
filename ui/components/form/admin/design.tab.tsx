@@ -27,6 +27,10 @@ export const DesignTab: React.FC<TabPaneProps> = (props) => {
               value: 'card',
               label: t('form:design.layout.card'),
             },
+            {
+              value: 'modern',
+              label: t('form:design.layout.modern'),
+            },
           ]}
         />
       </Form.Item>
