@@ -65,6 +65,7 @@ export class SubmissionService {
       .leftJoinAndSelect('form.fields', 'fields')
       .leftJoinAndSelect('form.hooks', 'hooks')
       .leftJoinAndSelect('s.fields', 'submissionFields')
+      .leftJoinAndSelect('submissionFields.field', 'fieldDefinition')
       .where('s.id = :id', { id })
       .getOne();
 

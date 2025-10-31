@@ -109,17 +109,15 @@ export const ModernLayout: React.FC<LayoutProps> = (props) => {
     try {
       const values = form.getFieldsValue()
       const fieldValue = values[currentField.id]
-
+      
       // Only save if field has a value
       if (fieldValue !== undefined && fieldValue !== null && fieldValue !== '') {
         await setField(currentField.id.toString(), fieldValue)
       }
       return true
     } catch (error) {
-      // Silently ignore save errors when going back
-      // This can happen when field doesn't exist yet in submission
-      logger('error saving field (ignored) %O', error)
-      return true // Return true to allow navigation to continue
+      logger('error saving field %O', error)
+      return false // Return false to prevent navigation if save fails
     }
   }
 
